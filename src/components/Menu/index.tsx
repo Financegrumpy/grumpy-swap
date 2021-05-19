@@ -120,7 +120,7 @@ const InternalMenuItem = styled(Link)`
   }
 `
 
-const CODE_LINK = 'https://github.com/Uniswap/uniswap-interface'
+const CODE_LINK = 'https://github.com/Financegrumpy/grumpy-swap'
 
 export default function Menu() {
   const { account } = useActiveWeb3React()
@@ -140,31 +140,31 @@ export default function Menu() {
 
       {open && (
         <MenuFlyout>
-          <MenuItem href="https://uniswap.org/">
+          <MenuItem href="https://grumpy.finance/">
             <Info size={14} />
             <div>About</div>
           </MenuItem>
-          <MenuItem href="https://docs.uniswap.org/">
+          {/* <MenuItem href="https://docs.uniswap.org/">
             <BookOpen size={14} />
             <div>Docs</div>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem href={CODE_LINK}>
             <Code size={14} />
             <div>Code</div>
           </MenuItem>
-          <MenuItem href="https://discord.gg/FCfyBSbCU5">
+          <MenuItem href="https://discord.gg/46HysF9z">
             <MessageCircle size={14} />
             <div>Discord</div>
           </MenuItem>
-          <MenuItem href="https://info.uniswap.org/">
+          <MenuItem href="https://dex.guru/token/0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b-eth">
             <PieChart size={14} />
             <div>Analytics</div>
           </MenuItem>
-          {account && (
+          {/* {account && (
             <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
               Claim UNI
             </UNIbutton>
-          )}
+          )} */}
         </MenuFlyout>
       )}
     </StyledMenu>
