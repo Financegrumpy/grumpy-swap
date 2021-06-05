@@ -15,7 +15,7 @@ import { TokenAmount, ChainId, Token } from '@uniswap/sdk-core'
 import { JSBI } from '@uniswap/v2-sdk'
 import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/actions'
-import useUSDCPrice from '../../hooks/useUSDCPrice'
+import logo from '../../assets/images/transparent-grumpy-logo-500px-fix.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -49,7 +49,7 @@ const PaddedAutoColumn = styled(AutoColumn)`
 
 const grumpyContractAddress = '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b';
 
-export default function Vote() {
+export default function Stats() {
   const { account, chainId } = useActiveWeb3React()
 
   //
@@ -62,7 +62,7 @@ export default function Vote() {
 
   function formatPrice(price: number) {
     if (price > 0) {
-      return (price / 1000000).toLocaleString().slice(0, -4)
+      return (price / 1000000000).toLocaleString().slice(0, -4)
     }
 
     return price.toString()
@@ -172,6 +172,9 @@ export default function Vote() {
           <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
         </WrapSmall>
         <MainContentWrapper>
+          <AutoColumn gap="lg" justify="center">
+            <img src={logo} alt="Logo" style={{ width: 100, height: 100, padding: 20 }} />
+          </AutoColumn>
           <AutoColumn gap="sm">
             <TYPE.body textAlign="center">Your $GRUMPY Balance</TYPE.body>
             <TYPE.largeHeader textAlign="center">{grumpyBalance}</TYPE.largeHeader>
