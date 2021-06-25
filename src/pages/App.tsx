@@ -87,7 +87,7 @@ export default function App() {
           <TopLevelModals />
           <Web3ReactManager>
             <Switch>
-              {/* <Route exact strict path="/vote" component={Vote} /> */}
+              <Route exact strict path="/vote" component={Vote} />
               <Route exact strict path="/vote/:id" component={VotePage} />
               <Route exact strict path="/claim" component={OpenClaimAddressModalAndRedirectToSwap} />
               <Route exact strict path="/uni" component={Earn} />
