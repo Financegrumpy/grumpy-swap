@@ -1,20 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { AutoColumn, ColumnCenter } from '../../components/Column'
+import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
-import { ExternalLink, TYPE } from '../../theme'
-import { RowBetween, RowFixed, AutoRow } from '../../components/Row'
+import { TYPE } from '../../theme'
+import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
-import {
-  useUserDelegatee,
-} from '../../state/governance/hooks'
-import DelegateModal from '../../components/vote/DelegateModal'
-import { useTokenBalance } from '../../state/wallet/hooks'
 import { useActiveWeb3React } from '../../hooks'
-import { UNI, ZERO_ADDRESS } from '../../constants'
-import { TokenAmount, ChainId, Token } from '@uniswap/sdk-core'
-import { JSBI } from '@uniswap/v2-sdk'
-import { useModalOpen, useToggleDelegateModal } from '../../state/application/hooks'
-import { ApplicationModal } from '../../state/application/actions'
 import logo from '../../assets/images/transparent-grumpy-logo-500px-fix.png'
 
 const PageWrapper = styled(AutoColumn)``
@@ -54,7 +44,6 @@ const grumpyContractAddress = '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b';
 export default function Stats() {
   const { account, chainId } = useActiveWeb3React()
 
-  //
   const [grumpyBalance, setGrumpyBalance] = useState(0)
   const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
   const [redistributedAmount, setRedistributedAmount] = useState(0)
@@ -63,7 +52,6 @@ export default function Stats() {
   const [price, setPrice] = useState('-')
   const [marketCap, setMarketCap] = useState('-')
   const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
-  //
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -77,7 +65,9 @@ export default function Stats() {
 
   function formatPriceUsd(price: number) {
     if (price > 0) {
-      return (price / 1000000000).toLocaleString()
+      return (price / 1000000000).toLocaleString(undefined, {
+        maximumFractionDigits: 0
+      })
     }
 
     return price.toString()
@@ -95,12 +85,14 @@ export default function Stats() {
       const userGrumpyValueInUsd = balance * price.rate
 
       setPrice('$' + price.rate.toFixed(11))
-      setMarketCap('$' + price.marketCapUsd.toLocaleString())
+      setMarketCap('$' + price.marketCapUsd.toLocaleString(undefined, {
+        maximumFractionDigits: 0
+      }))
       setGrumpyUsdValue('$' + formatPriceUsd(userGrumpyValueInUsd))
     }
   }
 
-  async function get() {
+  async function getWallet() {
     if (account) {
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
@@ -134,6 +126,7 @@ export default function Stats() {
 
   async function getGrumpyTransaction(account: string, balance: number) {
     const transactions_api = new URL("https://api.etherscan.io/api")
+    
     transactions_api.searchParams.append("module", "account")
     transactions_api.searchParams.append("action", "tokentx")
     transactions_api.searchParams.append("contractaddress", grumpyContractAddress)
@@ -150,8 +143,6 @@ export default function Stats() {
     let totalOut = 0.0
 
     for (const item of transaction) {
-      // console.log('item:', item)
-
       if (item.to === account.toLowerCase()) {
         totalIn += parseFloat(item.value)
       }
@@ -167,29 +158,11 @@ export default function Stats() {
   }
 
   useEffect(() => {
-    get()
+    getWallet()
   }, [account])
-
-  // toggle for showing delegation modal
-  const showDelegateModal = useModalOpen(ApplicationModal.DELEGATE)
-  const toggleDelegateModal = useToggleDelegateModal()
-
-  // user data
-  const uniBalance: TokenAmount | undefined = useTokenBalance(account ?? undefined, chainId ? UNI[chainId] : undefined)
-  const userDelegatee: string | undefined = useUserDelegatee()
-
-  // show delegation option if they have have a balance, but have not delegated
-  const showUnlockVoting = Boolean(
-    uniBalance && JSBI.notEqual(uniBalance.raw, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
-  )
 
   return (
     <PageWrapper gap="lg" justify="center">
-      <DelegateModal
-        isOpen={showDelegateModal}
-        onDismiss={toggleDelegateModal}
-        title={showUnlockVoting ? 'Unlock Votes' : 'Update Delegation'}
-      />
       <TopSection gap="md">
         <InfoCard>
           <CardBGImage />
@@ -291,9 +264,6 @@ export default function Stats() {
             </AutoColumn>
           </MainContentWrapper>
         </TopSection>}
-      {/* <TYPE.subHeader color="text3">
-        A minimum threshhold of 1% of the total UNI supply is required to submit proposals
-      </TYPE.subHeader> */}
     </PageWrapper>
   )
 }
