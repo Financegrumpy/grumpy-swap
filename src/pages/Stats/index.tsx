@@ -39,10 +39,10 @@ const PaddedAutoColumn = styled(AutoColumn)`
 
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const ethplorerApiKey = 'freekey'
-const grumpyContractAddress = '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b';
+const grumpyContractAddress = '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b'
 
 export default function Stats() {
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
 
   const [grumpyBalance, setGrumpyBalance] = useState(0)
   const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
@@ -66,7 +66,7 @@ export default function Stats() {
   function formatPriceUsd(price: number) {
     if (price > 0) {
       return (price / 1000000000).toLocaleString(undefined, {
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       })
     }
 
@@ -74,8 +74,8 @@ export default function Stats() {
   }
 
   async function getGrumpyStats(balance: number) {
-    const stats_api = new URL("https://api.ethplorer.io/getTokenInfo/0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b")
-    stats_api.searchParams.append("apiKey", ethplorerApiKey)
+    const stats_api = new URL('https://api.ethplorer.io/getTokenInfo/0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b')
+    stats_api.searchParams.append('apiKey', ethplorerApiKey)
 
     const statsReq = await fetch(stats_api.href)
     const statsRes = await statsReq.json()
@@ -85,9 +85,12 @@ export default function Stats() {
       const userGrumpyValueInUsd = balance * price.rate
 
       setPrice('$' + price.rate.toFixed(11))
-      setMarketCap('$' + price.marketCapUsd.toLocaleString(undefined, {
-        maximumFractionDigits: 0
-      }))
+      setMarketCap(
+        '$' +
+          price.marketCapUsd.toLocaleString(undefined, {
+            maximumFractionDigits: 0,
+          })
+      )
       setGrumpyUsdValue('$' + formatPriceUsd(userGrumpyValueInUsd))
     }
   }
@@ -108,14 +111,14 @@ export default function Stats() {
   }
 
   async function getGrumpyBalance(account: string) {
-    const balance_api = new URL("https://api.etherscan.io/api")
+    const balance_api = new URL('https://api.etherscan.io/api')
 
-    balance_api.searchParams.append("module", "account")
-    balance_api.searchParams.append("action", "tokenbalance")
-    balance_api.searchParams.append("contractaddress", grumpyContractAddress)
-    balance_api.searchParams.append("address", account)
-    balance_api.searchParams.append("tag", "latest")
-    balance_api.searchParams.append("apikey", ethescanApiKey)
+    balance_api.searchParams.append('module', 'account')
+    balance_api.searchParams.append('action', 'tokenbalance')
+    balance_api.searchParams.append('contractaddress', grumpyContractAddress)
+    balance_api.searchParams.append('address', account)
+    balance_api.searchParams.append('tag', 'latest')
+    balance_api.searchParams.append('apikey', ethescanApiKey)
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
@@ -125,15 +128,15 @@ export default function Stats() {
   }
 
   async function getGrumpyTransaction(account: string, balance: number) {
-    const transactions_api = new URL("https://api.etherscan.io/api")
-    
-    transactions_api.searchParams.append("module", "account")
-    transactions_api.searchParams.append("action", "tokentx")
-    transactions_api.searchParams.append("contractaddress", grumpyContractAddress)
-    transactions_api.searchParams.append("address", account)
-    transactions_api.searchParams.append("page", "1")
-    transactions_api.searchParams.append("offset", "10000")
-    transactions_api.searchParams.append("apikey", ethescanApiKey)
+    const transactions_api = new URL('https://api.etherscan.io/api')
+
+    transactions_api.searchParams.append('module', 'account')
+    transactions_api.searchParams.append('action', 'tokentx')
+    transactions_api.searchParams.append('contractaddress', grumpyContractAddress)
+    transactions_api.searchParams.append('address', account)
+    transactions_api.searchParams.append('page', '1')
+    transactions_api.searchParams.append('offset', '10000')
+    transactions_api.searchParams.append('apikey', ethescanApiKey)
 
     const transactionReq = await fetch(transactions_api.href)
     const transactionRes = await transactionReq.json()
@@ -145,14 +148,13 @@ export default function Stats() {
     for (const item of transaction) {
       if (item.to === account.toLowerCase()) {
         totalIn += parseFloat(item.value)
-      }
-      else {
+      } else {
         totalOut += parseFloat(item.value)
       }
     }
 
     const balanceWithoutRedistribution = totalIn - totalOut
-    const redistribution = (balance - balanceWithoutRedistribution);
+    const redistribution = balance - balanceWithoutRedistribution
 
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
   }
@@ -174,7 +176,8 @@ export default function Stats() {
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  $GRUMPY charges a 1% transaction fee which is then shared proportionally among $GRUMPY holders! Sit back and passively earn on your investment. Awful, right?
+                  $GRUMPY charges a 1% transaction fee which is then shared proportionally among $GRUMPY holders! Sit
+                  back and passively earn on your investment. Awful, right?
                 </TYPE.white>
               </RowBetween>
             </AutoColumn>
@@ -184,8 +187,8 @@ export default function Stats() {
         </InfoCard>
       </TopSection>
 
-      {
-        (account) ? <TopSection gap="md">
+      {account ? (
+        <TopSection gap="md">
           <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
@@ -223,7 +226,9 @@ export default function Stats() {
 
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Activity</TYPE.mediumHeader>
+              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+                Activity
+              </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
               <AutoColumn gap="lg">
@@ -246,12 +251,16 @@ export default function Stats() {
 
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">$GRUMPY Balance without Redistribution</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalanceWithoutRedistribution)}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">
+                    {formatPrice(grumpyBalanceWithoutRedistribution)}
+                  </TYPE.largeHeader>
                 </AutoColumn>
               </AutoColumn>
             </MainContentWrapper>
           </TopSection>
-        </TopSection> : <TopSection gap="2px">
+        </TopSection>
+      ) : (
+        <TopSection gap="2px">
           <WrapSmall>
             <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
           </WrapSmall>
@@ -263,7 +272,8 @@ export default function Stats() {
               <TYPE.body textAlign="center">Connect your wallet to see your $GRUMPY stats</TYPE.body>
             </AutoColumn>
           </MainContentWrapper>
-        </TopSection>}
+        </TopSection>
+      )}
     </PageWrapper>
   )
 }
