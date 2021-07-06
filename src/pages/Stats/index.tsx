@@ -55,9 +55,11 @@ export default function Stats() {
 
   function formatPrice(price: number) {
     if (price > 0) {
-      const priceString = (price / 1000000000).toLocaleString()
-      const dotIndex = priceString.indexOf('.')
-      return priceString.substring(0, dotIndex)
+      const priceString = (price / 1000000000).toLocaleString('en-US', {
+        maximumFractionDigits: 0,
+      })
+
+      return priceString
     }
 
     return price.toString()
@@ -65,7 +67,7 @@ export default function Stats() {
 
   function formatPriceUsd(price: number) {
     if (price > 0) {
-      return (price / 1000000000).toLocaleString(undefined, {
+      return (price / 1000000000).toLocaleString('en-US', {
         maximumFractionDigits: 0,
       })
     }
