@@ -55,19 +55,7 @@ export default function Stats() {
 
   function formatPrice(price: number) {
     if (price > 0) {
-      const priceString = (price / 1000000000).toLocaleString('en-US', {
-        maximumFractionDigits: 0,
-      })
-
-      return priceString
-    }
-
-    return price.toString()
-  }
-
-  function formatPriceUsd(price: number) {
-    if (price > 0) {
-      return (price / 1000000000).toLocaleString('en-US', {
+      return (price / 1000000000).toLocaleString(undefined, {
         maximumFractionDigits: 0,
       })
     }
@@ -93,7 +81,7 @@ export default function Stats() {
             maximumFractionDigits: 0,
           })
       )
-      setGrumpyUsdValue('$' + formatPriceUsd(userGrumpyValueInUsd))
+      setGrumpyUsdValue('$' + formatPrice(userGrumpyValueInUsd))
     }
   }
 
