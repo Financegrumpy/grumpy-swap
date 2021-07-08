@@ -55,8 +55,10 @@ export default function Stats() {
 
   function formatPrice(price: number) {
     if (price > 0) {
-      const commaSeparatedPrice = (price / 1000000000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      return commaSeparatedPrice.substring(0, commaSeparatedPrice.indexOf('.'))
+      const commaSeparatedPrice = Math.round(price / 1000000000)
+        .toString()
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      return commaSeparatedPrice
     }
 
     return price.toString()
