@@ -5,7 +5,7 @@ import { TYPE } from '../../theme'
 import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
-import logo from '../../assets/images/transparent-grumpy-logo-500px-fix.png'
+import logo from '../../assets/images/pawth-logo-transparent.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -39,7 +39,7 @@ const PaddedAutoColumn = styled(AutoColumn)`
 
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const ethplorerApiKey = 'freekey'
-const grumpyContractAddress = '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b'
+const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
   const { account } = useActiveWeb3React()
@@ -76,7 +76,7 @@ export default function Stats() {
   }
 
   async function getGrumpyStats(balance: number) {
-    const stats_api = new URL('https://api.ethplorer.io/getTokenInfo/0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b')
+    const stats_api = new URL('https://api.ethplorer.io/getTokenInfo/0xaecc217a749c2405b5ebc9857a16d58bdc1c367f')
     stats_api.searchParams.append('apiKey', ethplorerApiKey)
 
     const statsReq = await fetch(stats_api.href)
@@ -178,8 +178,7 @@ export default function Stats() {
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  $GRUMPY charges a 1% transaction fee which is then shared proportionally among $GRUMPY holders! Sit
-                  back and passively earn on your investment. Awful, right?
+                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal charities and shelters all over the world.
                 </TYPE.white>
               </RowBetween>
             </AutoColumn>
@@ -201,11 +200,11 @@ export default function Stats() {
                   <img src={logo} alt="Logo" style={{ width: 100, height: 100 }} />
                 </AutoColumn>
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">Your $GRUMPY Balance</TYPE.body>
+                  <TYPE.body textAlign="center">Your $PAWTH Balance</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)}</TYPE.largeHeader>
                 </AutoColumn>
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">Your $GRUMPY USD Value</TYPE.body>
+                  <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
                 </AutoColumn>
 
@@ -236,23 +235,23 @@ export default function Stats() {
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $GRUMPY In</TYPE.body>
+                    <TYPE.body textAlign="center">Total $PAWTH In</TYPE.body>
                     <TYPE.largeHeader textAlign="center">{formatPrice(totalIn)}</TYPE.largeHeader>
                   </PaddedAutoColumn>
 
                   <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $GRUMPY Out</TYPE.body>
+                    <TYPE.body textAlign="center">Total $PAWTH Out</TYPE.body>
                     <TYPE.largeHeader textAlign="center">{formatPrice(totalOut)}</TYPE.largeHeader>
                   </PaddedAutoColumn>
                 </AutoRow>
 
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">Redistributed $GRUMPY</TYPE.body>
+                  <TYPE.body textAlign="center">Redistributed $PAWTH</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
                 </AutoColumn>
 
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">$GRUMPY Balance without Redistribution</TYPE.body>
+                  <TYPE.body textAlign="center">$PAWTH Balance without Redistribution</TYPE.body>
                   <TYPE.largeHeader textAlign="center">
                     {formatPrice(grumpyBalanceWithoutRedistribution)}
                   </TYPE.largeHeader>
@@ -271,7 +270,7 @@ export default function Stats() {
               <img src={logo} alt="Logo" style={{ width: 100, height: 100, padding: 20 }} />
             </AutoColumn>
             <AutoColumn gap="sm">
-              <TYPE.body textAlign="center">Connect your wallet to see your $GRUMPY stats</TYPE.body>
+              <TYPE.body textAlign="center">Connect your wallet to see your $PAWTH stats</TYPE.body>
             </AutoColumn>
           </MainContentWrapper>
         </TopSection>

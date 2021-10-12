@@ -335,7 +335,7 @@ export default function WalletModal({
         )}
 
         <ContentWrapper>
-          <LightCard style={{ marginBottom: '16px' }}>
+          {/* <LightCard style={{ marginBottom: '16px' }}>
             <AutoRow style={{ flexWrap: 'nowrap' }}>
               <TYPE.main fontSize={14}>
                 By connecting a wallet, you agree to Uniswap Labs’{' '}
@@ -344,7 +344,7 @@ export default function WalletModal({
                 <ExternalLink href="https://uniswap.org/disclaimer/">Uniswap protocol disclaimer</ExternalLink>.
               </TYPE.main>
             </AutoRow>
-          </LightCard>
+          </LightCard> */}
           {walletView === WALLET_VIEWS.PENDING ? (
             <PendingView
               connector={pendingWallet}

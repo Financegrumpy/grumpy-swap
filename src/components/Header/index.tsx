@@ -323,16 +323,16 @@ export default function Header() {
         <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
       </Modal>
       <HeaderRow>
-        <Title href="https://grumpy.finance">
+        <Title href="https://pawthereum.com">
           <UniIcon>
             <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
       </HeaderRow>
       <HeaderLinks>
-        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+        {/* <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           {t('swap')}
-        </StyledNavLink>
+        </StyledNavLink> */}
         {/* <StyledNavLink
           id={`pool-nav-link`}
           to={'/pool'}
@@ -347,7 +347,7 @@ export default function Header() {
           {t('pool')}
         </StyledNavLink> */}
         <StyledNavLink id={`stats-nav-link`} to={'/stats'}>
-          {t('stats')}
+          {t('Your Pawth Stats')}
         </StyledNavLink>
         {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           Vote
