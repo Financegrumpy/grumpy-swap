@@ -40,6 +40,7 @@ export const FRAX = new Token(ChainId.MAINNET, '0x853d955aCEf822Db058eb8505911ED
 export const FXS = new Token(ChainId.MAINNET, '0x3432B6A60D23Ca0dFCa7761B7ab56459D9C964D0', 18, 'FXS', 'Frax Share')
 export const renBTC = new Token(ChainId.MAINNET, '0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D', 8, 'renBTC', 'renBTC')
 export const GRUMPY = new Token(ChainId.MAINNET, '0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b', 9, 'GRUMPY', 'Grumpy')
+export const PAWTH = new Token(ChainId.MAINNET, '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f', 9, 'PAWTH', 'Pawthereum')
 
 // Block time here is slightly higher (~1s) than average in order to avoid ongoing proposals past the displayed time
 export const AVERAGE_BLOCK_TIME_IN_SECS = 13
@@ -108,7 +109,7 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: Partial<ChainTokenList> = {
-  [ChainId.MAINNET]: [GRUMPY],
+  [ChainId.MAINNET]: [PAWTH],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend

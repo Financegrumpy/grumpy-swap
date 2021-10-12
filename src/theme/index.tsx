@@ -60,17 +60,17 @@ export function colors(darkMode: boolean): Colors {
     advancedBG: darkMode ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.6)',
 
     //primary colors
-    primary1: darkMode ? '#f90' : '#f90', // use grumpy orange in light and dark mode
+    primary1: darkMode ? '#ff65b3' : '#ff65b3', // use pawth pink in light and dark mode
     primary2: darkMode ? '#3680E7' : '#FF8CC3',
     primary3: darkMode ? '#4D8FEA' : '#FF99C9',
-    primary4: darkMode ? '#376bad70' : '#F6DDE8',
+    primary4: darkMode ? '#ff65b3' : '#ff65b3',
     primary5: darkMode ? '#153d6f70' : '#FDEAF1',
 
     // color text
-    primaryText1: darkMode ? '#6da8ff' : '#f90',
+    primaryText1: darkMode ? '#ff65b2' : '#ff65b2',
 
     // secondary colors
-    secondary1: darkMode ? '#f90' : '#f90', // use grumpy orange in light and dark mode
+    secondary1: darkMode ? '#ff65b2' : '#ff65b2', // use pawth pink in light and dark mode
     secondary2: darkMode ? '#17000b26' : '#F6DDE8',
     secondary3: darkMode ? '#17000b26' : '#FDEAF1',
 
@@ -198,7 +198,7 @@ export const ThemedBackground = styled.div<{ backgroundColor?: string | undefine
   mix-blend-mode: color;
   background: ${({ backgroundColor }) =>
     `radial-gradient(50% 50% at 50% 50%, ${
-      backgroundColor ? backgroundColor : '#fff3e3' // grumpy orange
+      backgroundColor ? backgroundColor : '#ff65b2' // pawth pink
     } 0%, rgba(255, 255, 255, 0) 100%)`};
   transform: translateY(-100vh);
   will-change: background;
@@ -207,12 +207,12 @@ export const ThemedBackground = styled.div<{ backgroundColor?: string | undefine
 
 export const FixedGlobalStyle = createGlobalStyle`
 html, input, textarea, button {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Comfortaa', sans-serif;
   font-display: fallback;
 }
 @supports (font-variation-settings: normal) {
   html, input, textarea, button {
-    font-family: 'Inter var', sans-serif;
+    font-family: 'Comfortaa', sans-serif;
   }
 }
 

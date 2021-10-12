@@ -102,6 +102,7 @@ export default function App() {
               <Route exact strict path="/pool" component={Pool} />
               <Route exact strict path="/pool/:tokenId" component={PositionPage} />
 
+              <Route exact strict path="/" component={Stats} />
               <Route exact strict path="/stats" component={Stats} />
 
               <Route exact strict path="/add/v2/:currencyIdA?/:currencyIdB?" component={RedirectDuplicateTokenIdsV2} />

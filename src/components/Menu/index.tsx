@@ -140,7 +140,7 @@ export default function Menu() {
 
       {open && (
         <MenuFlyout>
-          <MenuItem href="https://grumpy.finance/">
+          <MenuItem href="https://pawthereum.com/">
             <Info size={14} />
             <div>About</div>
           </MenuItem>
@@ -156,7 +156,7 @@ export default function Menu() {
             <MessageCircle size={14} />
             <div>Discord</div>
           </MenuItem>
-          <MenuItem href="https://dex.guru/token/0x93b2fff814fcaeffb01406e80b4ecd89ca6a021b-eth">
+          <MenuItem href="https://dex.guru/token/0xaecc217a749c2405b5ebc9857a16d58bdc1c367f-eth">
             <PieChart size={14} />
             <div>Analytics</div>
           </MenuItem>
