@@ -123,7 +123,7 @@ export default function Stats() {
 
   async function getWallet() {
     if (account) {
-      const balance = await getGrumpyBalance(account) + 2000
+      const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
       const rank = await getPawthRank(balance)
       getGrumpyStats(balance)
@@ -189,6 +189,7 @@ export default function Stats() {
   }
 
   async function getPawthRank(balance: number) {
+    balance /= 1000000000
     return (balance <= 1000) ? { name: 'Stray Cat', img: strayCat }
     : (balance <= 5000) ? { name: 'Kitten', img: kitten }
     : (balance <= 10000) ? { name: 'Dwarf Cat', img: dwarfCat }
