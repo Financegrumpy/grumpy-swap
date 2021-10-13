@@ -150,7 +150,7 @@ export default function Stats() {
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result) + 10000001
+    const balance = parseFloat(balanceRes.result)
     console.log('balance', balance)
 
     return balance
@@ -244,20 +244,21 @@ export default function Stats() {
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH Balance</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)} and {grumpyBalance}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)}</TYPE.largeHeader>
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
                 </AutoColumn>
-                <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">Your $PAWTH Rank</TYPE.body>
-                  <TYPE.body textAlign="center">
-                    <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
-                  </TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
-                </AutoColumn>
-
+                { grumpyBalance ? (
+                  <AutoColumn gap="sm">
+                    <TYPE.body textAlign="center">Your $PAWTH Rank</TYPE.body>
+                    <TYPE.body textAlign="center">
+                      <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
+                    </TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
+                  </AutoColumn>
+                ) : '' }
                 <AutoColumn gap="sm">
                   <AutoRow justify="center">
                     <PaddedAutoColumn gap="sm">
