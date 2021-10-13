@@ -6,6 +6,19 @@ import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
 import logo from '../../assets/images/pawth-logo-transparent.png'
+import strayCat from '../../assets/images/strayCat.png'
+import kitten from '../../assets/images/kitten.png'
+import dwarfCat from '../../assets/images/dwarfCat.png'
+import maineCoon from '../../assets/images/maineCoon.png'
+import abbysinian from '../../assets/images/abbysinian.png'
+import siamese from '../../assets/images/siamese.png'
+import sandCat from '../../assets/images/sandCat.png'
+import serval from '../../assets/images/serval.png'
+import puma from '../../assets/images/puma.png'
+import jaguar from '../../assets/images/jaguar.png'
+import blackPanther from '../../assets/images/blackPanther.png'
+import tiger from '../../assets/images/tiger.png'
+import lion from '../../assets/images/lion.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -45,6 +58,7 @@ export default function Stats() {
   const { account } = useActiveWeb3React()
 
   const [grumpyBalance, setGrumpyBalance] = useState(0)
+  const [pawthRank, setPawthRank] = useState({ name: '', img: '' })
   const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
   const [redistributedAmount, setRedistributedAmount] = useState(0)
   const [totalIn, setTotalIn] = useState(0)
@@ -86,14 +100,24 @@ export default function Stats() {
       const price = statsRes.price
       const userGrumpyValueInUsd = balance * price.rate
 
-      setPrice('$' + price.rate.toFixed(11))
+      setPrice(price.rate ? '$' + price.rate.toFixed(11) : '-')
       setMarketCap(
-        '$' +
-          price.marketCapUsd.toLocaleString(undefined, {
-            maximumFractionDigits: 0,
-          })
+        price.rate 
+        ?
+          '$' +
+            price.marketCapUsd.toLocaleString(undefined, {
+              maximumFractionDigits: 0,
+            })
+        :
+          '-'
       )
-      setGrumpyUsdValue('$' + formatPriceUsd(userGrumpyValueInUsd))
+      setGrumpyUsdValue(
+        isNaN(userGrumpyValueInUsd) 
+        ?
+          '-'
+        :
+          '$' + formatPriceUsd(userGrumpyValueInUsd)
+      )
     }
   }
 
@@ -101,9 +125,11 @@ export default function Stats() {
     if (account) {
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
+      const rank = await getPawthRank(balance)
       getGrumpyStats(balance)
 
       setGrumpyBalance(balance)
+      setPawthRank(rank)
 
       setTotalIn(tx.totalIn)
       setTotalOut(tx.totalOut)
@@ -124,7 +150,8 @@ export default function Stats() {
 
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
-    const balance = parseFloat(balanceRes.result)
+    const balance = parseFloat(balanceRes.result) + 10000001
+    console.log('balance', balance)
 
     return balance
   }
@@ -159,6 +186,22 @@ export default function Stats() {
     const redistribution = balance - balanceWithoutRedistribution
 
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
+  }
+
+  async function getPawthRank(balance: number) {
+    return (balance <= 1000) ? { name: 'Stray Cat', img: strayCat }
+    : (balance <= 5000) ? { name: 'Kitten', img: kitten }
+    : (balance <= 10000) ? { name: 'Dwarf Cat', img: dwarfCat }
+    : (balance <= 25000) ? { name: 'Maine Coon', img: maineCoon }
+    : (balance <= 50000) ? { name: 'Abbysinian', img: abbysinian }
+    : (balance <= 100000) ? { name: 'Siamese', img: siamese }
+    : (balance <= 250000) ? { name: 'Sand Cat', img: sandCat }
+    : (balance <= 500000) ? { name: 'Serval', img: serval }
+    : (balance <= 1000000) ? { name: 'Puma', img: puma }
+    : (balance <= 2500000) ? { name: 'Jaguar', img: jaguar }
+    : (balance <= 5000000) ? { name: 'Black Panther', img: blackPanther }
+    : (balance <= 10000000) ? { name: 'Tiger', img: tiger }
+    : { name: 'Lion', img: lion }
   }
 
   useEffect(() => {
@@ -201,11 +244,18 @@ export default function Stats() {
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH Balance</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)}</TYPE.largeHeader>
+                  <TYPE.largeHeader textAlign="center">{formatPrice(grumpyBalance)} and {grumpyBalance}</TYPE.largeHeader>
                 </AutoColumn>
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
+                </AutoColumn>
+                <AutoColumn gap="sm">
+                  <TYPE.body textAlign="center">Your $PAWTH Rank</TYPE.body>
+                  <TYPE.body textAlign="center">
+                    <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
+                  </TYPE.body>
+                  <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
                 </AutoColumn>
 
                 <AutoColumn gap="sm">
