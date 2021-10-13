@@ -203,6 +203,7 @@ export const ThemedBackground = styled.div<{ backgroundColor?: string | undefine
   transform: translateY(-100vh);
   will-change: background;
   transition: background 450ms ease;
+  z-index: -1000;
 `
 
 export const FixedGlobalStyle = createGlobalStyle`
