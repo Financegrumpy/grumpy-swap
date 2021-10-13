@@ -123,7 +123,7 @@ export default function Stats() {
 
   async function getWallet() {
     if (account) {
-      const balance = await getGrumpyBalance(account)
+      const balance = await getGrumpyBalance(account) + 2000
       const tx = await getGrumpyTransaction(account, balance)
       const rank = await getPawthRank(balance)
       getGrumpyStats(balance)
@@ -297,12 +297,12 @@ export default function Stats() {
                 </AutoRow>
 
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">Redistributed $PAWTH</TYPE.body>
+                  <TYPE.body textAlign="center">$PAWTH Reflections Earned</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
                 </AutoColumn>
 
                 <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">$PAWTH Balance without Redistribution</TYPE.body>
+                  <TYPE.body textAlign="center">$PAWTH Balance without Reflections</TYPE.body>
                   <TYPE.largeHeader textAlign="center">
                     {formatPrice(grumpyBalanceWithoutRedistribution)}
                   </TYPE.largeHeader>
