@@ -182,6 +182,10 @@ export default function Stats() {
       }
     }
 
+    // 2% of the out transaction goes to reflections, but we don't see that in etherscan
+    // so we add it here instead. If reflection numbers ever changes, this is fucked.
+    totalOut = totalOut + totalOut * 0.02
+
     const balanceWithoutRedistribution = totalIn - totalOut
     const redistribution = balance - balanceWithoutRedistribution
 
