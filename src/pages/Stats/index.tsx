@@ -74,6 +74,8 @@ export default function Stats() {
   const [price, setPrice] = useState('-')
   const [marketCap, setMarketCap] = useState('-')
   const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
+  const [charityOneDayTotal, setCharityOneDayTotal] = useState(0)
+
   const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
   const [isDiamondHands, setIsDiamondHands] = useState(false)
   const [isVoter, setIsVoter] = useState(false)
@@ -140,6 +142,8 @@ export default function Stats() {
       const tx = await getGrumpyTransaction(account, balance)
       const rank = await getPawthRank(balance)
       const isVoter = await getVoterStatus(account)
+      const charityTx = await getCharityWalletTransaction()
+      
       getGrumpyStats(balance)
 
       setGrumpyBalance(balance)
@@ -149,6 +153,8 @@ export default function Stats() {
       setTotalOut(tx.totalOut)
       setRedistributedAmount(tx.redistribution)
       setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
+
+      setCharityOneDayTotal(charityTx.oneDayTotal)
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
@@ -249,6 +255,40 @@ export default function Stats() {
     return { totalIn, totalOut, redistribution, balanceWithoutRedistribution }
   }
 
+  async function getCharityWalletTransaction() {
+    const transactions_api = new URL('https://api.etherscan.io/api')
+    const charityWallet = '0xf4a22c530e8cc64770c4edb5766d26f8926e20bd'
+
+    transactions_api.searchParams.append('module', 'account')
+    transactions_api.searchParams.append('action', 'tokentx')
+    transactions_api.searchParams.append('contractaddress', grumpyContractAddress)
+    transactions_api.searchParams.append('address', charityWallet)
+    transactions_api.searchParams.append('page', '1')
+    transactions_api.searchParams.append('offset', '10000')
+    transactions_api.searchParams.append('apikey', ethescanApiKey)
+
+    const transactionReq = await fetch(transactions_api.href)
+    const transactionRes = await transactionReq.json()
+    const transaction = transactionRes.result
+
+    let oneDayTotal = 0.0
+
+    const now = new Date().getTime()
+    const oneDayAgo = 60 * 60 * 24 * 1000
+    const transactionsToday = transaction.filter((t: any) => {
+      return now - new Date(t.timeStamp * 1000).getTime() <= oneDayAgo
+    })
+
+    for (const item of transactionsToday) {
+      if (item.to === charityWallet.toLowerCase()) {
+        oneDayTotal += parseFloat(item.value)
+      }
+    }
+
+    return { oneDayTotal }
+
+  }
+
   async function getPawthRank(balance: number) {
     balance /= 1000000000
     return (balance <= 1000) ? { name: 'Stray Cat', img: strayCat }
@@ -341,7 +381,7 @@ export default function Stats() {
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <AutoColumn gap="sm">
-                    <TYPE.mediumHeader textAlign="center">Your $PAWTH Rank</TYPE.mediumHeader>
+                    <TYPE.mediumHeader textAlign="center">Your PAWTHER Rank</TYPE.mediumHeader>
                     
                       <TYPE.body textAlign="center">
                         <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
@@ -464,6 +504,28 @@ export default function Stats() {
                     {formatPrice(grumpyBalanceWithoutRedistribution)}
                   </TYPE.largeHeader>
                 </AutoColumn>
+              </AutoColumn>
+            </MainContentWrapper>
+          </TopSection>
+
+          <TopSection gap="2px">
+            <WrapSmall>
+              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+                Charity Wallet
+              </TYPE.mediumHeader>
+            </WrapSmall>
+            <MainContentWrapper>
+              <AutoColumn gap="lg">
+                <AutoRow justify="center">
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">Total $PAWTH Today</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{formatPrice(charityOneDayTotal)}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">Total USD Value Today</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                </AutoRow>
               </AutoColumn>
             </MainContentWrapper>
           </TopSection>
