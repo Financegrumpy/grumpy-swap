@@ -104,7 +104,7 @@ export function AddRemoveTabs({
     <Tabs>
       <RowBetween style={{ padding: '1rem 1rem 0 1rem' }}>
         <HistoryLink
-          to={'/pool' + (!!positionID ? `/${positionID.toString()}` : '')}
+          to={'/pool/v2' + (!!positionID ? `/${positionID.toString()}` : '')}
           onClick={() => {
             if (adding) {
               // not 100% sure both of these are needed

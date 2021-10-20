@@ -330,12 +330,22 @@ export default function Header() {
         </Title>
       </HeaderRow>
       <HeaderLinks>
-        {/* <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+        <StyledNavLink 
+          id={`stats-nav-link`} 
+          to={'/stats'}
+          isActive={(match, { pathname }) =>
+            Boolean(match) ||
+            pathname.endsWith('/')
+          }
+        >
+          {t('Stats')}
+        </StyledNavLink>
+        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
           {t('swap')}
-        </StyledNavLink> */}
-        {/* <StyledNavLink
+        </StyledNavLink>
+        <StyledNavLink
           id={`pool-nav-link`}
-          to={'/pool'}
+          to={'/pool/v2'}
           isActive={(match, { pathname }) =>
             Boolean(match) ||
             pathname.startsWith('/add') ||
@@ -345,9 +355,6 @@ export default function Header() {
           }
         >
           {t('pool')}
-        </StyledNavLink> */}
-        <StyledNavLink id={`stats-nav-link`} to={'/stats'}>
-          {t('Your Pawth Stats')}
         </StyledNavLink>
         {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           Vote
