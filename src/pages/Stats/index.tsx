@@ -26,6 +26,7 @@ import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
 import diamond from '../../assets/images/diamond.png'
 import fist from '../../assets/images/fist.png'
+import wildcat from '../../assets/images/wildcat.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -62,7 +63,8 @@ const ethplorerApiKey = 'freekey'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
+  const account = '0x06b0a2c6beea3fd215d47324dd49e1ee3a4a9f25'
 
   const [grumpyBalance, setGrumpyBalance] = useState(0)
   const [pawthRank, setPawthRank] = useState({ name: '', img: '' })
@@ -77,6 +79,7 @@ export default function Stats() {
   const [isDiamondHands, setIsDiamondHands] = useState(false)
   const [isVoter, setIsVoter] = useState(false)
   const [isHolder, setIsHolder] = useState(false)
+  const [isInWildCatClub, setIsInWildCatClub] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -200,6 +203,9 @@ export default function Stats() {
     const balance = parseFloat(balanceRes.result)
     if (balance > 0) {
       setIsHolder(true)
+    }
+    if (balance > 100000) {
+      setIsInWildCatClub(true)
     }
 
     return balance
@@ -379,7 +385,7 @@ export default function Stats() {
                       <img src={diamond} alt="Diamond Hands" style={{ width: 50, height: 50 }} />
                     </TYPE.body>
                     <TYPE.body textAlign="center"><strong>Diamond Hands</strong></TYPE.body>
-                    <TYPE.body textAlign="center"><small>Never sold $PAWTH</small></TYPE.body>
+                    <TYPE.body textAlign="center"><small>Never sold Pawth</small></TYPE.body>
                   </PaddedAutoColumn>
                   ) : ''
                 }
@@ -391,6 +397,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Snapshot Voter</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Voted on proposal</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isInWildCatClub ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={wildcat} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Wild Cats Club</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Holds 100k+ Pawth</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
