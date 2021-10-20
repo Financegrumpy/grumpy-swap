@@ -148,7 +148,7 @@ export default function Stats() {
       setRedistributedAmount(tx.redistribution)
       setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
 
-      setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account))
+      setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
     }
   }
