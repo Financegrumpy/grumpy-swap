@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { ORIGINAL_SWAPPERS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -6,6 +7,7 @@ import { RowBetween, AutoRow } from '../../components/Row'
 import { CardBGImage, CardNoise, CardSection, DataCard } from '../../components/earn/styled'
 import { useActiveWeb3React } from '../../hooks'
 import logo from '../../assets/images/pawth-logo-transparent.png'
+// Ranks
 import strayCat from '../../assets/images/strayCat.png'
 import kitten from '../../assets/images/kitten.png'
 import dwarfCat from '../../assets/images/dwarfCat.png'
@@ -19,6 +21,11 @@ import jaguar from '../../assets/images/jaguar.png'
 import blackPanther from '../../assets/images/blackPanther.png'
 import tiger from '../../assets/images/tiger.png'
 import lion from '../../assets/images/lion.png'
+// Awards
+import swap from '../../assets/images/swap.png'
+import vote from '../../assets/images/vote.png'
+import diamond from '../../assets/images/diamond.png'
+import fist from '../../assets/images/fist.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -66,6 +73,10 @@ export default function Stats() {
   const [price, setPrice] = useState('-')
   const [marketCap, setMarketCap] = useState('-')
   const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
+  const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
+  const [isDiamondHands, setIsDiamondHands] = useState(false)
+  const [isVoter, setIsVoter] = useState(false)
+  const [isHolder, setIsHolder] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -126,6 +137,7 @@ export default function Stats() {
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
       const rank = await getPawthRank(balance)
+      const isVoter = await getVoterStatus(account)
       getGrumpyStats(balance)
 
       setGrumpyBalance(balance)
@@ -135,7 +147,42 @@ export default function Stats() {
       setTotalOut(tx.totalOut)
       setRedistributedAmount(tx.redistribution)
       setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
+
+      setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account))
+      setIsVoter(isVoter)
     }
+  }
+
+  async function getVoterStatus(account: string) {
+    return fetch('https://hub.snapshot.org/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          query Votes {
+            votes (
+              first: 1000
+              skip: 0
+              where: {
+                space_in: ["pawthereum.eth"]
+              },
+              orderBy: "created",
+              orderDirection: desc
+            ) {
+              voter
+            }
+          }        
+        `,
+      }),
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        const votes = result.data.votes
+        const voters = Object.entries(votes).map((v: any) => v[1].voter)
+        return voters.includes(account)
+      })
   }
 
   async function getGrumpyBalance(account: string) {
@@ -151,7 +198,9 @@ export default function Stats() {
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
     const balance = parseFloat(balanceRes.result)
-    console.log('balance', balance)
+    if (balance > 0) {
+      setIsHolder(true)
+    }
 
     return balance
   }
@@ -185,6 +234,9 @@ export default function Stats() {
     // 2% of the out transaction goes to reflections, but we don't see that in etherscan
     // so we add it here instead. If reflection numbers ever changes, this is fucked.
     totalOut = totalOut + totalOut * 0.02
+
+    // if this person never sold, they are diamond hands
+    setIsDiamondHands(totalOut === 0 && totalIn > 0)
 
     const balanceWithoutRedistribution = totalIn - totalOut
     const redistribution = balance - balanceWithoutRedistribution
@@ -255,15 +307,7 @@ export default function Stats() {
                   <TYPE.body textAlign="center">Your $PAWTH USD Value</TYPE.body>
                   <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
                 </AutoColumn>
-                { grumpyBalance ? (
-                  <AutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Your $PAWTH Rank</TYPE.body>
-                    <TYPE.body textAlign="center">
-                      <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
-                    </TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
-                  </AutoColumn>
-                ) : '' }
+
                 <AutoColumn gap="sm">
                   <AutoRow justify="center">
                     <PaddedAutoColumn gap="sm">
@@ -278,6 +322,98 @@ export default function Stats() {
                   </AutoRow>
                 </AutoColumn>
               </AutoColumn>
+            </MainContentWrapper>
+          </TopSection>
+
+          <TopSection gap="2px">
+            <WrapSmall>
+              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+                Rank and Awards
+              </TYPE.mediumHeader>
+            </WrapSmall>
+            <MainContentWrapper>
+            { grumpyBalance ? (
+              <AutoColumn gap="lg">
+                <AutoRow justify="center">
+                  <AutoColumn gap="sm">
+                    <TYPE.mediumHeader textAlign="center">Your $PAWTH Rank</TYPE.mediumHeader>
+                    
+                      <TYPE.body textAlign="center">
+                        <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
+                      </TYPE.body>
+                      <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
+                  </AutoColumn>
+                </AutoRow>
+                
+                <AutoRow justify="center">
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.mediumHeader textAlign="center">Your $PAWTH Awards</TYPE.mediumHeader>
+                  </PaddedAutoColumn>
+                </AutoRow>
+
+                <AutoRow justify="center">
+                { isHolder ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={fist} alt="Pawth Holder" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Pawth Holder</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Holds 1+ Pawth</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : ''
+                }
+                { isOriginalSwapper ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={swap} alt="Original Swapper" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Original Swapper</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Swapped $GRUMPY</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : ''
+                }
+                {
+                  isDiamondHands ? (
+                    <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">
+                      <img src={diamond} alt="Diamond Hands" style={{ width: 50, height: 50 }} />
+                    </TYPE.body>
+                    <TYPE.body textAlign="center"><strong>Diamond Hands</strong></TYPE.body>
+                    <TYPE.body textAlign="center"><small>Never sold $PAWTH</small></TYPE.body>
+                  </PaddedAutoColumn>
+                  ) : ''
+                }
+                {
+                  isVoter ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={vote} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Snapshot Voter</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Voted on proposal</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                </AutoRow>
+              </AutoColumn>
+              ) : (
+                <AutoColumn gap="lg">
+                  <AutoRow justify="center">
+                    <AutoColumn gap="sm">
+                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Rank</TYPE.mediumHeader>
+                      <TYPE.largeHeader textAlign="center">-</TYPE.largeHeader>
+                    </AutoColumn>
+                  </AutoRow>
+                  
+                  <AutoRow justify="center">
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Awards</TYPE.mediumHeader>
+                    </PaddedAutoColumn>
+                  </AutoRow>
+                </AutoColumn>
+                
+              )
+            }
             </MainContentWrapper>
           </TopSection>
 
