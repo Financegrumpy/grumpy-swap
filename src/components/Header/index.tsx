@@ -340,7 +340,10 @@ export default function Header() {
         >
           {t('Stats')}
         </StyledNavLink>
-        <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
+        <StyledNavLink 
+          id={`swap-nav-link`} 
+          to={'/swap?use=V2&inputCurrency=ETH&outputCurrency=0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'}
+        >
           {t('swap')}
         </StyledNavLink>
         <StyledNavLink
