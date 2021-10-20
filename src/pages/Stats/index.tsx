@@ -339,7 +339,7 @@ export default function Stats() {
                     <TYPE.mediumHeader textAlign="center">Your $PAWTH Rank</TYPE.mediumHeader>
                     
                       <TYPE.body textAlign="center">
-                        <img src={pawthRank.img} alt="Logo" style={{ width: 100, height: 100 }} />
+                        <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
                       </TYPE.body>
                       <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
                   </AutoColumn>
