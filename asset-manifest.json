@@ -4,8 +4,8 @@
     "static/js/0.75ef159a.chunk.js.map": "/static/js/0.75ef159a.chunk.js.map",
     "static/js/1.51df01a2.chunk.js": "/static/js/1.51df01a2.chunk.js",
     "static/js/1.51df01a2.chunk.js.map": "/static/js/1.51df01a2.chunk.js.map",
-    "main.js": "/static/js/main.45bfcd61.chunk.js",
-    "main.js.map": "/static/js/main.45bfcd61.chunk.js.map",
+    "main.js": "/static/js/main.87e5386f.chunk.js",
+    "main.js.map": "/static/js/main.87e5386f.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.2cc5d4df.js",
     "runtime-main.js.map": "/static/js/runtime-main.2cc5d4df.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -50,6 +50,7 @@
     "static/media/noise.0473ebbb.png": "/static/media/noise.0473ebbb.png",
     "static/media/portisIcon.f44aba13.png": "/static/media/portisIcon.f44aba13.png",
     "static/media/puma.bbf04e5a.png": "/static/media/puma.bbf04e5a.png",
+    "static/media/sadCat.d4ebaf15.png": "/static/media/sadCat.d4ebaf15.png",
     "static/media/sandCat.eb0118d2.png": "/static/media/sandCat.eb0118d2.png",
     "static/media/sandtexture.044f98c8.png": "/static/media/sandtexture.044f98c8.png",
     "static/media/serval.d9481afb.png": "/static/media/serval.d9481afb.png",
@@ -67,6 +68,6 @@
     "static/js/runtime-main.2cc5d4df.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.d59a955d.chunk.js",
-    "static/js/main.45bfcd61.chunk.js"
+    "static/js/main.87e5386f.chunk.js"
   ]
 }
