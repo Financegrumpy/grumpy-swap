@@ -65,17 +65,29 @@ const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 export default function Stats() {
   const { account } = useActiveWeb3React()
 
+  // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
-  const [pawthRank, setPawthRank] = useState({ name: '', img: '' })
   const [grumpyBalanceWithoutRedistribution, setGrumpyBalanceWithoutRedistribution] = useState(0)
+  const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
   const [redistributedAmount, setRedistributedAmount] = useState(0)
+  const [redistributedUsdValue, setRedistributedUsdValue] = useState('-')
   const [totalIn, setTotalIn] = useState(0)
   const [totalOut, setTotalOut] = useState(0)
+  
+  // price state vars
   const [price, setPrice] = useState('-')
   const [marketCap, setMarketCap] = useState('-')
-  const [grumpyUsdValue, setGrumpyUsdValue] = useState('-')
-  const [charityOneDayTotal, setCharityOneDayTotal] = useState(0)
 
+  // charity wallet state vars
+  const [charityOneDayTotal, setCharityOneDayTotal] = useState(0)
+  const [charityOneDayUsd, setCharityWalletOneDayUsd] = useState('-')
+  const [charityAllTimeTotal, setCharityAllTimeTotal] = useState(0)
+  const [charityWalletAllTimeUsd, setCharityWalletAllTimeUsd] = useState('-')
+  const [charityTransferredOut, setCharityTransferredOut] = useState(0)
+  const [charityTransferredOutUsd, setCharityTransferredOutUsd] = useState('-')
+
+  // awards state vars
+  const [pawthRank, setPawthRank] = useState({ name: '', img: '' })
   const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
   const [isDiamondHands, setIsDiamondHands] = useState(false)
   const [isVoter, setIsVoter] = useState(false)
@@ -114,13 +126,31 @@ export default function Stats() {
     if (!statsRes.hasOwnProperty('error')) {
       const price = statsRes.price
       const userGrumpyValueInUsd = balance * price.rate
+      const userRedistributedValueInUsd = redistributedAmount * price.rate
 
-      setPrice(price.rate ? '$' + price.rate.toFixed(11) : '-')
+      const charityWalletAllTimeUsd = charityAllTimeTotal * price.rate
+      const charityWalletTodayUsd = charityOneDayTotal * price.rate
+      const charityTransferredOutUsd = charityTransferredOut * price.rate
+
+      setPrice(price.rate ? '$' + price.rate.toFixed(6) : '-')
+
+      // TODO: once market cap starts coming back in the API, use that
+      // setMarketCap(
+      //   price.rate 
+      //   ?
+      //     '$' +
+      //       price.marketCapUsd.toLocaleString(undefined, {
+      //         maximumFractionDigits: 0,
+      //       })
+      //   :
+      //     '-'
+      // )
+      const hardcodedSupply = 858000000 // hardcode supply until we get mc data in api
       setMarketCap(
         price.rate 
         ?
           '$' +
-            price.marketCapUsd.toLocaleString(undefined, {
+            (price.rate * hardcodedSupply).toLocaleString(undefined, {
               maximumFractionDigits: 0,
             })
         :
@@ -133,16 +163,48 @@ export default function Stats() {
         :
           '$' + formatPriceUsd(userGrumpyValueInUsd)
       )
+      setRedistributedUsdValue(
+        isNaN(userRedistributedValueInUsd) 
+        ?
+          '-'
+        :
+          '$' + formatPriceUsd(userRedistributedValueInUsd)
+      )
+      setCharityWalletAllTimeUsd(
+        isNaN(charityWalletAllTimeUsd)
+        ?
+          '-'
+        :
+          '$' + formatPriceUsd(charityWalletAllTimeUsd)
+      )
+      setCharityWalletOneDayUsd(
+        isNaN(charityWalletTodayUsd)
+        ?
+          '-'
+        :
+          '$' + formatPriceUsd(charityWalletTodayUsd)
+      )
+      setCharityTransferredOutUsd(
+        isNaN(charityTransferredOutUsd)
+        ?
+          '-'
+        :
+          '$' + formatPriceUsd(charityTransferredOutUsd)
+      )
     }
   }
 
   async function getWallet() {
     if (account) {
+      const charityTx = await getCharityWalletTransaction()
+      setCharityOneDayTotal(charityTx.oneDayTotal)
+      setCharityAllTimeTotal(charityTx.totalIn)
+      setCharityTransferredOut(charityTx.totalOut)
+
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
       const rank = await getPawthRank(balance)
       const isVoter = await getVoterStatus(account)
-      const charityTx = await getCharityWalletTransaction()
       
       getGrumpyStats(balance)
 
@@ -153,8 +215,6 @@ export default function Stats() {
       setTotalOut(tx.totalOut)
       setRedistributedAmount(tx.redistribution)
       setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
-
-      setCharityOneDayTotal(charityTx.oneDayTotal)
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
@@ -209,7 +269,9 @@ export default function Stats() {
     if (balance > 0) {
       setIsHolder(true)
     }
-    if (balance > 100000) {
+
+    const formattedBalance = balance / 1000000000
+    if (formattedBalance >= 100000) {
       setIsInWildCatClub(true)
     }
 
@@ -271,21 +333,28 @@ export default function Stats() {
     const transactionRes = await transactionReq.json()
     const transaction = transactionRes.result
 
+    let totalIn = 0.0
+    let totalOut = 0.0
     let oneDayTotal = 0.0
 
     const now = new Date().getTime()
     const oneDayAgo = 60 * 60 * 24 * 1000
-    const transactionsToday = transaction.filter((t: any) => {
+    const transactionHashesToday = transaction.filter((t: any) => {
       return now - new Date(t.timeStamp * 1000).getTime() <= oneDayAgo
-    })
+    }).map((t: any) => t.hash)
 
-    for (const item of transactionsToday) {
+    for (const item of transaction) {
       if (item.to === charityWallet.toLowerCase()) {
-        oneDayTotal += parseFloat(item.value)
+        if (transactionHashesToday.includes(item.hash)) {
+          oneDayTotal += parseFloat(item.value)
+        }
+        totalIn += parseFloat(item.value)
+      } else {
+        totalOut += parseFloat(item.value)
       }
     }
 
-    return { oneDayTotal }
+    return { oneDayTotal, totalIn, totalOut }
 
   }
 
@@ -337,7 +406,9 @@ export default function Stats() {
         <TopSection gap="md">
           <TopSection gap="2px">
             <WrapSmall>
-              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>Wallet</TYPE.mediumHeader>
+              <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
+                Your Wallet
+              </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
               <AutoColumn gap="lg">
@@ -373,7 +444,7 @@ export default function Stats() {
           <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
-                Rank and Awards
+                Your Rank and Awards
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
@@ -476,7 +547,7 @@ export default function Stats() {
           <TopSection gap="2px">
             <WrapSmall>
               <TYPE.mediumHeader style={{ margin: '0.5rem 0.5rem 0.5rem 0', flexShrink: 0 }}>
-                Activity
+                Your $PAWTH Activity
               </TYPE.mediumHeader>
             </WrapSmall>
             <MainContentWrapper>
@@ -493,10 +564,16 @@ export default function Stats() {
                   </PaddedAutoColumn>
                 </AutoRow>
 
-                <AutoColumn gap="sm">
-                  <TYPE.body textAlign="center">$PAWTH Reflections Earned</TYPE.body>
-                  <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
-                </AutoColumn>
+                <AutoRow justify="center">
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">$PAWTH Reflections Earned</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{formatPrice(redistributedAmount)}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">$PAWTH Reflections USD Value</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{redistributedUsdValue}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                </AutoRow>
 
                 <AutoColumn gap="sm">
                   <TYPE.body textAlign="center">$PAWTH Balance without Reflections</TYPE.body>
@@ -518,15 +595,29 @@ export default function Stats() {
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total $PAWTH Today</TYPE.body>
+                    <TYPE.body textAlign="center">$PAWTH Collected Last 24h</TYPE.body>
                     <TYPE.largeHeader textAlign="center">{formatPrice(charityOneDayTotal)}</TYPE.largeHeader>
                   </PaddedAutoColumn>
                   <PaddedAutoColumn gap="sm">
-                    <TYPE.body textAlign="center">Total USD Value Today</TYPE.body>
-                    <TYPE.largeHeader textAlign="center">{grumpyUsdValue}</TYPE.largeHeader>
+                    <TYPE.body textAlign="center">USD Value Collected Last 24h</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{charityOneDayUsd}</TYPE.largeHeader>
                   </PaddedAutoColumn>
                 </AutoRow>
               </AutoColumn>
+
+              {/* TODO: Uncomment this if we ever want to show charity all time stats
+              <AutoColumn gap="lg">
+                <AutoRow justify="center">
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">$PAWTH Collected All Time</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{formatPrice(charityAllTimeTotal)}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                  <PaddedAutoColumn gap="sm">
+                    <TYPE.body textAlign="center">USD Value Collected All Time</TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{charityWalletAllTimeUsd}</TYPE.largeHeader>
+                  </PaddedAutoColumn>
+                </AutoRow>
+              </AutoColumn> */}
             </MainContentWrapper>
           </TopSection>
         </TopSection>
