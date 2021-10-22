@@ -338,7 +338,7 @@ export default function Header() {
             pathname.endsWith('/')
           }
         >
-          {t('Stats')}
+          {t('My Pawth BETA')}
         </StyledNavLink>
         {/* <StyledNavLink 
           id={`swap-nav-link`} 
@@ -346,7 +346,7 @@ export default function Header() {
         >
           {t('swap')}
         </StyledNavLink> */}
-        <StyledNavLink
+        {/* <StyledNavLink
           id={`pool-nav-link`}
           to={'/pool/v2'}
           isActive={(match, { pathname }) =>
@@ -358,7 +358,7 @@ export default function Header() {
           }
         >
           {t('pool')}
-        </StyledNavLink>
+        </StyledNavLink> */}
         {/* <StyledNavLink id={`stake-nav-link`} to={'/vote'}>
           Vote
         </StyledNavLink>
