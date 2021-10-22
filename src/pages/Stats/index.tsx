@@ -63,7 +63,8 @@ const ethplorerApiKey = 'freekey'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
+  const account = '0x6b91528d2120610d34fd1f603829b1815fdff90c'
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
@@ -116,7 +117,7 @@ export default function Stats() {
     return price.toString()
   }
 
-  async function getGrumpyStats(balance: number) {
+  async function getGrumpyStats(balance: number, redistributedAmount: number, charityOneDayTotal: number) {
     const stats_api = new URL('https://api.ethplorer.io/getTokenInfo/0xaecc217a749c2405b5ebc9857a16d58bdc1c367f')
     stats_api.searchParams.append('apiKey', ethplorerApiKey)
 
@@ -170,6 +171,9 @@ export default function Stats() {
         :
           '$' + formatPriceUsd(userRedistributedValueInUsd)
       )
+      // TODO: when you are ready to show all time charity stats, pass the 
+      // charityWalletAllTimeUsd data into this getStats function to 
+      // avoid race conditions
       setCharityWalletAllTimeUsd(
         isNaN(charityWalletAllTimeUsd)
         ?
@@ -206,7 +210,7 @@ export default function Stats() {
       const rank = await getPawthRank(balance)
       const isVoter = await getVoterStatus(account)
       
-      getGrumpyStats(balance)
+      getGrumpyStats(balance, tx.redistribution, charityTx.oneDayTotal)
 
       setGrumpyBalance(balance)
       setPawthRank(rank)
