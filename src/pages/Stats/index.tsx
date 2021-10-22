@@ -21,6 +21,8 @@ import jaguar from '../../assets/images/jaguar.png'
 import blackPanther from '../../assets/images/blackPanther.png'
 import tiger from '../../assets/images/tiger.png'
 import lion from '../../assets/images/lion.png'
+import crown from '../../assets/images/crown.png'
+import sadCat from '../../assets/images/sadCat.png'
 // Awards
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
@@ -86,8 +88,14 @@ export default function Stats() {
   const [charityTransferredOut, setCharityTransferredOut] = useState(0)
   const [charityTransferredOutUsd, setCharityTransferredOutUsd] = useState('-')
 
+  // rank state vars
+  const [previousPawthRank, setPreviousPawthRank] = useState({ name: '', img: '', threshold: 0 })
+  const [pawthRank, setPawthRank] = useState({ name: '', img: '', threshold: 0 })
+  const [nextPawthRank, setNextPawthRank] = useState({ name: '', img: '', threshold: 0 })
+  const [distanceToNextRank, setDistanceToNextRank] = useState('-')
+  const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
+
   // awards state vars
-  const [pawthRank, setPawthRank] = useState({ name: '', img: '' })
   const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
   const [isDiamondHands, setIsDiamondHands] = useState(false)
   const [isVoter, setIsVoter] = useState(false)
@@ -206,13 +214,18 @@ export default function Stats() {
 
       const balance = await getGrumpyBalance(account)
       const tx = await getGrumpyTransaction(account, balance)
-      const rank = await getPawthRank(balance)
+      const ranks = await getPawthRanks(balance)
       const isVoter = await getVoterStatus(account)
       
       getGrumpyStats(balance, tx.redistribution, charityTx.oneDayTotal)
 
       setGrumpyBalance(balance)
-      setPawthRank(rank)
+
+      setPreviousPawthRank(ranks.previousRank)
+      setPawthRank(ranks.rank)
+      setNextPawthRank(ranks.nextRank)
+      setDistanceToNextRank(ranks.distanceToNextRank)
+      setDistanceToPreviousRank(ranks.distanceToPreviousRank)
 
       setTotalIn(tx.totalIn)
       setTotalOut(tx.totalOut)
@@ -269,11 +282,11 @@ export default function Stats() {
     const balanceReq = await fetch(balance_api.href)
     const balanceRes = await balanceReq.json()
     const balance = parseFloat(balanceRes.result)
-    if (balance > 0) {
-      setIsHolder(true)
-    }
 
     const formattedBalance = balance / 1000000000
+    if (formattedBalance >= 1) {
+      setIsHolder(true)
+    }
     if (formattedBalance >= 100000) {
       setIsInWildCatClub(true)
     }
@@ -361,21 +374,55 @@ export default function Stats() {
 
   }
 
-  async function getPawthRank(balance: number) {
+  async function getPawthRanks(balance: number) {
     balance /= 1000000000
-    return (balance <= 1000) ? { name: 'Stray Cat', img: strayCat }
-    : (balance <= 5000) ? { name: 'Kitten', img: kitten }
-    : (balance <= 10000) ? { name: 'Dwarf Cat', img: dwarfCat }
-    : (balance <= 25000) ? { name: 'Maine Coon', img: maineCoon }
-    : (balance <= 50000) ? { name: 'Abbysinian', img: abbysinian }
-    : (balance <= 100000) ? { name: 'Siamese', img: siamese }
-    : (balance <= 250000) ? { name: 'Sand Cat', img: sandCat }
-    : (balance <= 500000) ? { name: 'Serval', img: serval }
-    : (balance <= 1000000) ? { name: 'Puma', img: puma }
-    : (balance <= 2500000) ? { name: 'Jaguar', img: jaguar }
-    : (balance <= 5000000) ? { name: 'Black Panther', img: blackPanther }
-    : (balance <= 10000000) ? { name: 'Tiger', img: tiger }
-    : { name: 'Lion', img: lion }
+    const ranks = [
+      { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
+      { name: 'Stray Cat', img: strayCat, threshold: 1000 },
+      { name: 'Kitten', img: kitten, threshold: 5000 },
+      { name: 'Dwarf Cat', img: dwarfCat, threshold: 10000 },
+      { name: 'Maine Coon', img: maineCoon, threshold: 25000 },
+      { name: 'Abbysinian', img: abbysinian, threshold: 50000 },
+      { name: 'Siamese', img: siamese, threshold: 100000 },
+      { name: 'Sand Cat', img: sandCat, threshold: 250000 },
+      { name: 'Serval', img: serval, threshold: 500000 },
+      { name: 'Puma', img: puma, threshold: 1000000 },
+      { name: 'Jaguar', img: jaguar, threshold: 2500000 },
+      { name: 'Black Panther', img: blackPanther, threshold: 5000000 },
+      { name: 'Tiger', img: tiger, threshold: 10000000 },
+      { name: 'Lion', img: lion, threshold: 10000000 },
+      { name: 'You achieved the top rank!', img: crown, threshold: 10000000 }
+    ]
+
+    let rankIndex = ranks.findIndex((r: any) => {
+      return balance <= r.threshold
+    })
+
+    let distanceToNextRank, distanceToPreviousRank
+
+    if (rankIndex === -1) {
+      rankIndex = ranks.length - 2
+      distanceToNextRank = 'The animals thank you'
+    }
+
+    if (rankIndex === 0) {
+      distanceToPreviousRank = 'You are the lowest rank'
+    }
+
+    const previousRank = ranks[rankIndex - 1]
+    const rank = ranks[rankIndex]
+    const nextRank = ranks[rankIndex + 1]
+
+    if (!distanceToNextRank) {
+      distanceToNextRank = '+' + formatPrice((nextRank.threshold - balance) * 1000000000)
+    }
+
+    if (!distanceToPreviousRank) {
+      const d = '-' + formatPrice((balance - previousRank.threshold + 1) * 1000000000)
+      distanceToPreviousRank = d === '-1' ? 'Go get some $PAWTH!' : d
+    }
+
+    return { previousRank, rank, nextRank, distanceToPreviousRank, distanceToNextRank }
   }
 
   useEffect(() => {
@@ -456,12 +503,33 @@ export default function Stats() {
                 <AutoRow justify="center">
                   <AutoColumn gap="sm">
                     <TYPE.mediumHeader textAlign="center">Your PAWTHER Rank</TYPE.mediumHeader>
-                    
-                      <TYPE.body textAlign="center">
-                        <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
-                      </TYPE.body>
-                      <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
+                    <TYPE.body textAlign="center">
+                      <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
+                    </TYPE.body>
+                    <TYPE.largeHeader textAlign="center">{pawthRank.name}</TYPE.largeHeader>
                   </AutoColumn>
+                </AutoRow>
+                <AutoRow justify="center">
+                  <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
+                    <TYPE.body textAlign="center"><small>Next Rank</small></TYPE.body>
+                    <TYPE.body textAlign="center">
+                      <img src={nextPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
+                    </TYPE.body>
+                    <TYPE.body textAlign="center">
+                      <small><strong>{nextPawthRank.name}</strong></small>
+                    </TYPE.body>
+                    <TYPE.body textAlign="center"><small>{distanceToNextRank}</small></TYPE.body>
+                  </PaddedAutoColumn>
+                  <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
+                    <TYPE.body textAlign="center"><small>Previous Rank</small></TYPE.body>
+                    <TYPE.body textAlign="center">
+                      <img src={previousPawthRank.img} alt="Logo" style={{ width: 50, height: 50 }} />
+                    </TYPE.body>
+                    <TYPE.body textAlign="center">
+                      <small><strong>{previousPawthRank.name}</strong></small>
+                    </TYPE.body>
+                    <TYPE.body textAlign="center"><small>{distanceToPreviousRank}</small></TYPE.body>
+                  </PaddedAutoColumn>
                 </AutoRow>
                 
                 <AutoRow justify="center">
@@ -530,7 +598,7 @@ export default function Stats() {
                 <AutoColumn gap="lg">
                   <AutoRow justify="center">
                     <AutoColumn gap="sm">
-                      <TYPE.mediumHeader textAlign="center">Your $PAWTH Rank</TYPE.mediumHeader>
+                      <TYPE.mediumHeader textAlign="center">Your PAWTHER Rank</TYPE.mediumHeader>
                       <TYPE.largeHeader textAlign="center">-</TYPE.largeHeader>
                     </AutoColumn>
                   </AutoRow>
