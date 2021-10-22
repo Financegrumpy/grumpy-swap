@@ -63,8 +63,7 @@ const ethplorerApiKey = 'freekey'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
-  // const { account } = useActiveWeb3React()
-  const account = '0x6b91528d2120610d34fd1f603829b1815fdff90c'
+  const { account } = useActiveWeb3React()
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
