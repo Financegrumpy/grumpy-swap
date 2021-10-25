@@ -520,6 +520,7 @@ export default function Stats() {
                     </TYPE.body>
                     <TYPE.body textAlign="center"><small>{distanceToNextRank}</small></TYPE.body>
                   </PaddedAutoColumn>
+                  {/* TODO: Uncomment this if we ever want to show the previous rank
                   <PaddedAutoColumn gap="sm" style={{ width: '50%' }}>
                     <TYPE.body textAlign="center"><small>Previous Rank</small></TYPE.body>
                     <TYPE.body textAlign="center">
@@ -529,7 +530,7 @@ export default function Stats() {
                       <small><strong>{previousPawthRank.name}</strong></small>
                     </TYPE.body>
                     <TYPE.body textAlign="center"><small>{distanceToPreviousRank}</small></TYPE.body>
-                  </PaddedAutoColumn>
+                  </PaddedAutoColumn> */}
                 </AutoRow>
                 
                 <AutoRow justify="center">
