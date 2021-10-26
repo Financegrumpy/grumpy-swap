@@ -42,7 +42,7 @@ const HeaderFrame = styled.div`
   /* border-bottom: 1px solid ${({ theme }) => theme.bg2}; */
   padding: 1rem;
   z-index: 21;
-  /* background-color: ${({ theme }) => theme.bg1}; */
+  background-color: ${({ theme }) => theme.bg1};
   position: relative;
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
