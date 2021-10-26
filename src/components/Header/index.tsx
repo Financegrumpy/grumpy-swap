@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { Moon, Sun } from 'react-feather'
 import styled from 'styled-components'
 
-import Logo from '../../assets/svg/logo.png'
-import LogoDark from '../../assets/svg/logo.png'
+import Logo from '../../assets/images/myPawthLogo.png'
+import LogoDark from '../../assets/images/myPawthLogo.png'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useDarkModeManager } from '../../state/user/hooks'
@@ -325,7 +325,7 @@ export default function Header() {
       <HeaderRow>
         <Title href="https://pawthereum.com">
           <UniIcon>
-            <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" />
+            <img width={'32px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
         <TYPE.label>
