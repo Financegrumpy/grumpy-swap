@@ -23,6 +23,7 @@ import RemoveLiquidity from './RemoveLiquidity'
 import RemoveLiquidityV3 from './RemoveLiquidity/V3'
 import Swap from './Swap'
 import Stats from './Stats'
+import Feedback from './Feedback'
 import { OpenClaimAddressModalAndRedirectToSwap, RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 import Vote from './Vote'
 import VotePage from './Vote/VotePage'
@@ -104,6 +105,8 @@ export default function App() {
 
               <Route exact strict path="/" component={Stats} />
               <Route exact strict path="/stats" component={Stats} />
+
+              <Route exact strict path="/feedback" component={Feedback} />
 
               <Route exact strict path="/add/v2/:currencyIdA?/:currencyIdB?" component={RedirectDuplicateTokenIdsV2} />
               <Route

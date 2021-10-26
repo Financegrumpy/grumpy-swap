@@ -328,6 +328,9 @@ export default function Header() {
             <img width={'24px'} src={darkMode ? LogoDark : Logo} alt="logo" />
           </UniIcon>
         </Title>
+        <TYPE.label>
+          BETA
+        </TYPE.label>
       </HeaderRow>
       <HeaderLinks>
         <StyledNavLink 
@@ -338,7 +341,7 @@ export default function Header() {
             pathname.endsWith('/')
           }
         >
-          {t('My Pawth BETA')}
+          {t('MyPawth')}
         </StyledNavLink>
         {/* <StyledNavLink 
           id={`swap-nav-link`} 
@@ -365,6 +368,16 @@ export default function Header() {
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>
         </StyledExternalLink> */}
+        <StyledNavLink 
+          id={`feedback-nav-link`} 
+          to={'/feedback'}
+          isActive={(match, { pathname }) =>
+            Boolean(match) ||
+            pathname.startsWith('/feedback')
+          }
+        >
+          {t('Feedback')}
+        </StyledNavLink>
       </HeaderLinks>
       <HeaderControls>
         <HeaderElement>

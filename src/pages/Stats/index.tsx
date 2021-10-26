@@ -442,7 +442,7 @@ export default function Stats() {
               </RowBetween>
               <RowBetween>
                 <TYPE.white fontSize={14}>
-                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal charities and shelters all over the world.
+                  Pawthereum is a decentralized community-run charity cryptocurrency that aims to help animal shelters all over the world and has already donated over $80k!
                 </TYPE.white>
               </RowBetween>
             </AutoColumn>
