@@ -156,7 +156,7 @@ export default function Menu() {
             <MessageCircle size={14} />
             <div>Discord</div>
           </MenuItem>
-          <MenuItem href="https://dex.guru/token/0xaecc217a749c2405b5ebc9857a16d58bdc1c367f-eth">
+          <MenuItem href="https://www.dextools.io/app/ether/pair-explorer/0x800a45f2b861229d59e952aef57b22e84ff949a1">
             <PieChart size={14} />
             <div>Analytics</div>
           </MenuItem>
