@@ -7,7 +7,6 @@ const PageWrapper = styled(AutoColumn)``
 
 const TopSection = styled(AutoColumn)`
   max-width: 768px;
-  min-width: 500px;
   width: 100%;
 `
 
