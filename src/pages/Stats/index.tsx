@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ORIGINAL_SWAPPERS } from './../../constants/index'
+import { ORIGINAL_SWAPPERS, BUG_SQUISHERS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -29,6 +29,7 @@ import vote from '../../assets/images/vote.png'
 import diamond from '../../assets/images/diamond.png'
 import fist from '../../assets/images/fist.png'
 import wildcat from '../../assets/images/wildcat.png'
+import bug from '../../assets/images/bug.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -101,6 +102,7 @@ export default function Stats() {
   const [isVoter, setIsVoter] = useState(false)
   const [isHolder, setIsHolder] = useState(false)
   const [isInWildCatClub, setIsInWildCatClub] = useState(false)
+  const [isBugSquisher, setIsBugSquisher] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -233,6 +235,7 @@ export default function Stats() {
       setGrumpyBalanceWithoutRedistribution(tx.balanceWithoutRedistribution)
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
+      setIsBugSquisher(BUG_SQUISHERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
     }
   }
@@ -414,7 +417,7 @@ export default function Stats() {
     const nextRank = ranks[rankIndex + 1]
 
     if (!distanceToNextRank) {
-      distanceToNextRank = '+' + formatPrice((nextRank.threshold - balance) * 1000000000)
+      distanceToNextRank = '+' + formatPrice((rank.threshold - balance) * 1000000000)
     }
 
     if (!distanceToPreviousRank) {
@@ -590,6 +593,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Wild Cats Club</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Holds 100k+ Pawth</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isBugSquisher ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={bug} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Bug Squisher</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Reported a Pawth bug</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }

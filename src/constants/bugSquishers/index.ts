@@ -1,0 +1,3 @@
+export const BUG_SQUISHERS = [
+  '0x12131c1a56a885ad64aca4db449a1473d591f536'
+]

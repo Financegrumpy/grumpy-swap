@@ -24,6 +24,7 @@ export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export { PRELOADED_PROPOSALS } from './proposals'
 export { ORIGINAL_SWAPPERS } from './originalSwappers'
+export { BUG_SQUISHERS } from './bugSquishers'
 
 // a list of tokens by chain
 type ChainTokenList = {
