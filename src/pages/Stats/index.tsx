@@ -251,7 +251,7 @@ export default function Stats() {
           someDate.getMonth() == today.getMonth() &&
           someDate.getFullYear() == today.getFullYear()
       }
-      const isCatDay = isToday(new Date('October 29, 2021'))
+      const isCatDay = isToday(new Date('October 28, 2021')) || isToday(new Date('October 29, 2021'))
       if (isCatDay) {
         const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
         // const addVisitorUrl = 'https://thingproxy.freeboard.io/fetch/https://script.google.com/macros/s/AKfycbx7ChJSh5oyCwdlEVB5KTkzuA3tTdYDZb4gAA5CNlR6J9h6CQpON2vLY2hrWMfcuuLj9Q/exec'
