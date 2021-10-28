@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ORIGINAL_SWAPPERS, BUG_SQUISHERS } from './../../constants/index'
+import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
 import { TYPE } from '../../theme'
@@ -30,6 +30,7 @@ import diamond from '../../assets/images/diamond.png'
 import fist from '../../assets/images/fist.png'
 import wildcat from '../../assets/images/wildcat.png'
 import bug from '../../assets/images/bug.png'
+import catDay from '../../assets/images/catDay.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -66,7 +67,8 @@ const ethplorerApiKey = 'freekey'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
+  const account = '0x06b0a2c6beea3fd215d47324dd49e1ee3a4a9f25'
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
@@ -96,6 +98,9 @@ export default function Stats() {
   const [distanceToNextRank, setDistanceToNextRank] = useState('-')
   const [distanceToPreviousRank, setDistanceToPreviousRank] = useState('-')
 
+  // for testing
+  const [isTester, setIsTester] = useState(false)
+
   // awards state vars
   const [isOriginalSwapper, setIsOriginalSwapper] = useState(false)
   const [isDiamondHands, setIsDiamondHands] = useState(false)
@@ -103,6 +108,7 @@ export default function Stats() {
   const [isHolder, setIsHolder] = useState(false)
   const [isInWildCatClub, setIsInWildCatClub] = useState(false)
   const [isBugSquisher, setIsBugSquisher] = useState(false)
+  const [isCatDayVisitor, setIsCatDayVisitor] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -236,7 +242,31 @@ export default function Stats() {
 
       setIsOriginalSwapper(ORIGINAL_SWAPPERS.includes(account.toLowerCase()))
       setIsBugSquisher(BUG_SQUISHERS.includes(account.toLowerCase()))
+      setIsTester(TESTERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
+
+      // TODO: we can get rid of all of this after cat day
+      const isToday = (someDate: any) => {
+        const today = new Date()
+        return someDate.getDate() == today.getDate() &&
+          someDate.getMonth() == today.getMonth() &&
+          someDate.getFullYear() == today.getFullYear()
+      }
+      const isCatDay = isToday(new Date('October 28, 2021'))
+      if (isCatDay) {
+        const addVisitorUrl = 'https://thingproxy.freeboard.io/fetch/https://script.google.com/macros/s/AKfycbx7ChJSh5oyCwdlEVB5KTkzuA3tTdYDZb4gAA5CNlR6J9h6CQpON2vLY2hrWMfcuuLj9Q/exec'
+        await fetch (addVisitorUrl, {
+          method: 'post',
+          headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ account: account })
+        })
+      }
+      // once cat day is over delete the code above and change the state setter
+      // to only check if they are part of the cat day visitors constant
+      setIsCatDayVisitor(isCatDay || CAT_DAY_VISITORS.includes(account.toLowerCase()))
     }
   }
 
@@ -604,6 +634,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Bug Squisher</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Reported a Pawth bug</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isCatDayVisitor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={catDay} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>National Cat Day</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Visited MyPawth on Cat Day</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
