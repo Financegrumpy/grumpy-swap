@@ -67,7 +67,8 @@ const ethplorerApiKey = 'freekey'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
-  const { account } = useActiveWeb3React()
+  // const { account } = useActiveWeb3React()
+  const account = '0x06b0a2c6beea3fd215d47324dd49e1ee3a4a9f25'
 
   // wallet state vars
   const [grumpyBalance, setGrumpyBalance] = useState(0)
@@ -251,7 +252,7 @@ export default function Stats() {
           someDate.getMonth() == today.getMonth() &&
           someDate.getFullYear() == today.getFullYear()
       }
-      const isCatDay = isToday(new Date('October 29, 2021'))
+      const isCatDay = isToday(new Date('October 28, 2021')) || isToday(new Date('October 29, 2021'))
       if (isCatDay) {
         const addVisitorUrl = 'https://thingproxy.freeboard.io/fetch/https://script.google.com/macros/s/AKfycbx7ChJSh5oyCwdlEVB5KTkzuA3tTdYDZb4gAA5CNlR6J9h6CQpON2vLY2hrWMfcuuLj9Q/exec'
         await fetch (addVisitorUrl, {
