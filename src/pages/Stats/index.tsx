@@ -342,7 +342,7 @@ export default function Stats() {
       setIsInWildCatClub(true)
     }
 
-    return balance + 100000
+    return balance
   }
 
   async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
