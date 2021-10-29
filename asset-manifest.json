@@ -4,8 +4,8 @@
     "static/js/0.8eb6ade0.chunk.js.map": "/static/js/0.8eb6ade0.chunk.js.map",
     "static/js/1.75cf6c87.chunk.js": "/static/js/1.75cf6c87.chunk.js",
     "static/js/1.75cf6c87.chunk.js.map": "/static/js/1.75cf6c87.chunk.js.map",
-    "main.js": "/static/js/main.4f0effcd.chunk.js",
-    "main.js.map": "/static/js/main.4f0effcd.chunk.js.map",
+    "main.js": "/static/js/main.3299612a.chunk.js",
+    "main.js.map": "/static/js/main.3299612a.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.1dbaf3e4.js",
     "runtime-main.js.map": "/static/js/runtime-main.1dbaf3e4.js.map",
     "static/css/4.93041314.chunk.css": "/static/css/4.93041314.chunk.css",
@@ -57,11 +57,13 @@
     "static/media/sandCat.eb0118d2.png": "/static/media/sandCat.eb0118d2.png",
     "static/media/sandtexture.044f98c8.png": "/static/media/sandtexture.044f98c8.png",
     "static/media/serval.d9481afb.png": "/static/media/serval.d9481afb.png",
+    "static/media/shibaInuLp.d7923021.png": "/static/media/shibaInuLp.d7923021.png",
     "static/media/siamese.284d3b9a.png": "/static/media/siamese.284d3b9a.png",
     "static/media/squiggle.294665ed.png": "/static/media/squiggle.294665ed.png",
     "static/media/strayCat.a11da6f2.png": "/static/media/strayCat.a11da6f2.png",
     "static/media/tiger.b64917f6.png": "/static/media/tiger.b64917f6.png",
     "static/media/tokenlist.831c6277.svg": "/static/media/tokenlist.831c6277.svg",
+    "static/media/uniLp.5298500b.png": "/static/media/uniLp.5298500b.png",
     "static/media/walletConnectIcon.304e3277.svg": "/static/media/walletConnectIcon.304e3277.svg",
     "static/media/wildcat.96016407.png": "/static/media/wildcat.96016407.png",
     "static/media/x.33076876.svg": "/static/media/x.33076876.svg",
@@ -71,6 +73,6 @@
     "static/js/runtime-main.1dbaf3e4.js",
     "static/css/4.93041314.chunk.css",
     "static/js/4.08c3e0bb.chunk.js",
-    "static/js/main.4f0effcd.chunk.js"
+    "static/js/main.3299612a.chunk.js"
   ]
 }
