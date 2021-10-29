@@ -26,11 +26,13 @@ import sadCat from '../../assets/images/sadCat.png'
 // Awards
 import swap from '../../assets/images/swap.png'
 import vote from '../../assets/images/vote.png'
-import diamond from '../../assets/images/diamond.png'
+import diamondPaws from '../../assets/images/diamondPaws.png'
 import fist from '../../assets/images/fist.png'
 import wildcat from '../../assets/images/wildcat.png'
 import bug from '../../assets/images/bug.png'
 import catDay from '../../assets/images/catDay.png'
+import shibaInuLp from '../../assets/images/shibaInuLp.png'
+import uniLp from '../../assets/images/uniLp.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -108,6 +110,8 @@ export default function Stats() {
   const [isInWildCatClub, setIsInWildCatClub] = useState(false)
   const [isBugSquisher, setIsBugSquisher] = useState(false)
   const [isCatDayVisitor, setIsCatDayVisitor] = useState(false)
+  const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
+  const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -244,6 +248,18 @@ export default function Stats() {
       setIsTester(TESTERS.includes(account.toLowerCase()))
       setIsVoter(isVoter)
 
+      const shibaLpTokenAddr = '0xc57dc778a0d2d150d04fc0fd09a0113ebe9d600c'
+      const shibaLpTokenBalance = await getTokenBalance(account, shibaLpTokenAddr, 18)
+      if (shibaLpTokenBalance.balance > 0) {
+        setIsShibaLpProvider(true)
+      }
+
+      const uniswapLpTokenAddr = '0x800a45f2b861229d59e952aef57b22e84ff949a1'
+      const uniswapLpTokenBalance = await getTokenBalance(account, uniswapLpTokenAddr, 18)
+      if (uniswapLpTokenBalance.balance > 0) {
+        setIsUniswapLpProvider(true)
+      }
+
       // TODO: we can get rid of all of this after cat day
       const isToday = (someDate: any) => {
         const today = new Date()
@@ -256,8 +272,7 @@ export default function Stats() {
       if (isCatDay) {
         const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
         // const addVisitorUrl = 'https://thingproxy.freeboard.io/fetch/https://script.google.com/macros/s/AKfycbx7ChJSh5oyCwdlEVB5KTkzuA3tTdYDZb4gAA5CNlR6J9h6CQpON2vLY2hrWMfcuuLj9Q/exec'
-        const resp = await fetch (addVisitorUrl)
-        console.log('resp', resp)
+        await fetch (addVisitorUrl)
         // , {
         //   method: 'post',
         //   headers: {
@@ -327,7 +342,25 @@ export default function Stats() {
       setIsInWildCatClub(true)
     }
 
-    return balance
+    return balance + 100000
+  }
+
+  async function getTokenBalance(account: string, tokenAddr: string, tokenDecimals: number) {
+    const balance_api = new URL('https://api.etherscan.io/api')
+
+    balance_api.searchParams.append('module', 'account')
+    balance_api.searchParams.append('action', 'tokenbalance')
+    balance_api.searchParams.append('contractaddress', tokenAddr)
+    balance_api.searchParams.append('address', account)
+    balance_api.searchParams.append('tag', 'latest')
+    balance_api.searchParams.append('apikey', ethescanApiKey)
+
+    const balanceReq = await fetch(balance_api.href)
+    const balanceRes = await balanceReq.json()
+    const balance = parseFloat(balanceRes.result)
+
+    const formattedBalance = balance / 10**tokenDecimals
+    return { balance, formattedBalance }
   }
 
   async function getGrumpyTransaction(account: string, balance: number) {
@@ -600,9 +633,9 @@ export default function Stats() {
                   isDiamondHands ? (
                     <PaddedAutoColumn gap="sm">
                     <TYPE.body textAlign="center">
-                      <img src={diamond} alt="Diamond Hands" style={{ width: 50, height: 50 }} />
+                      <img src={diamondPaws} alt="Diamond Paws" style={{ width: 50, height: 50 }} />
                     </TYPE.body>
-                    <TYPE.body textAlign="center"><strong>Diamond Hands</strong></TYPE.body>
+                    <TYPE.body textAlign="center"><strong>Diamond Paws</strong></TYPE.body>
                     <TYPE.body textAlign="center"><small>Never sold Pawth</small></TYPE.body>
                   </PaddedAutoColumn>
                   ) : ''
@@ -648,6 +681,28 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>National Cat Day</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Visited MyPawth on Cat Day</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isShibaLpProvider ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={shibaInuLp} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Shiba Liquidity Legend</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Provided Liquidity to Shiba Swap</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isUniswapLpProvider ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={uniLp} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Uni Liquidity Legend</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Provided Liquidity to Uniswap</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
