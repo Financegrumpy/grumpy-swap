@@ -65,7 +65,7 @@ const PaddedAutoColumn = styled(AutoColumn)`
 `
 
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
-const ethplorerApiKey = 'freekey'
+const ethplorerApiKey = process.env.REACT_APP_ETHPLORER_API_KEY || ''
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
 export default function Stats() {
