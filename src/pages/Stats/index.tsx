@@ -33,6 +33,7 @@ import bug from '../../assets/images/bug.png'
 import catDay from '../../assets/images/catDay.png'
 import shibaInuLp from '../../assets/images/shibaInuLp.png'
 import uniLp from '../../assets/images/uniLp.png'
+import heartSparkle from '../../assets/images/heartSparkle.png'
 
 const PageWrapper = styled(AutoColumn)``
 
@@ -67,6 +68,8 @@ const PaddedAutoColumn = styled(AutoColumn)`
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const ethplorerApiKey = process.env.REACT_APP_ETHPLORER_API_KEY || ''
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
+const pawthCharityWallet = '0xf4a22c530e8cc64770c4edb5766d26f8926e20bd'
+const pawthMarketingWallet = '0x16b1db77b60c8d8b6ecea0fa4e0481e9f53c9ba1'
 
 export default function Stats() {
   const { account } = useActiveWeb3React()
@@ -112,6 +115,7 @@ export default function Stats() {
   const [isCatDayVisitor, setIsCatDayVisitor] = useState(false)
   const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
   const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
+  const [isMarketingDonor, setIsMarketingDonor] = useState(false)
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -227,6 +231,9 @@ export default function Stats() {
       const tx = await getGrumpyTransaction(account, balance)
       const ranks = await getPawthRanks(balance)
       const isVoter = await getVoterStatus(account)
+
+      const ethTransactions = await getEthTransaction(account)
+      setIsMarketingDonor(ethTransactions.isMarketingWalletDonor)
       
       getGrumpyStats(balance, tx.redistribution, charityTx.oneDayTotal)
 
@@ -337,6 +344,31 @@ export default function Stats() {
 
     const formattedBalance = balance / 10**tokenDecimals
     return { balance, formattedBalance }
+  }
+
+  async function getEthTransaction(account: string) {
+    const transactions_api = new URL('https://api.etherscan.io/api')
+
+    transactions_api.searchParams.append('module', 'account')
+    transactions_api.searchParams.append('action', 'txlist')
+    transactions_api.searchParams.append('address', account)
+    transactions_api.searchParams.append('page', '1')
+    transactions_api.searchParams.append('offset', '10000')
+    transactions_api.searchParams.append('apikey', ethescanApiKey)
+
+    const transactionReq = await fetch(transactions_api.href)
+    const transactionRes = await transactionReq.json()
+    const transaction = transactionRes.result
+
+    let isMarketingWalletDonor = false
+    for (const item of transaction) {
+      if (item.to === pawthMarketingWallet.toLowerCase()) {
+        console.log('item', item)
+        isMarketingWalletDonor = true
+      }
+    }
+
+    return { isMarketingWalletDonor }
   }
 
   async function getGrumpyTransaction(account: string, balance: number) {
@@ -679,6 +711,17 @@ export default function Stats() {
                       </TYPE.body>
                       <TYPE.body textAlign="center"><strong>Uni Liquidity Legend</strong></TYPE.body>
                       <TYPE.body textAlign="center"><small>Provided Liquidity to Uniswap</small></TYPE.body>
+                    </PaddedAutoColumn>
+                  ) : '' 
+                }
+                {
+                  isMarketingDonor ? (
+                    <PaddedAutoColumn gap="sm">
+                      <TYPE.body textAlign="center">
+                        <img src={heartSparkle} alt="Voter" style={{ width: 50, height: 50 }} />
+                      </TYPE.body>
+                      <TYPE.body textAlign="center"><strong>Marketing Donor</strong></TYPE.body>
+                      <TYPE.body textAlign="center"><small>Donated to the Marketing Wallet</small></TYPE.body>
                     </PaddedAutoColumn>
                   ) : '' 
                 }
