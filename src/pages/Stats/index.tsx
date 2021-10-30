@@ -260,31 +260,7 @@ export default function Stats() {
         setIsUniswapLpProvider(true)
       }
 
-      // TODO: we can get rid of all of this after cat day
-      const isToday = (someDate: any) => {
-        const today = new Date()
-        return someDate.getDate() == today.getDate() &&
-          someDate.getMonth() == today.getMonth() &&
-          someDate.getFullYear() == today.getFullYear()
-      }
-      const isCatDay = isToday(new Date('October 28, 2021')) || isToday(new Date('October 29, 2021'))
-      console.log('is cat day', isCatDay)
-      if (isCatDay) {
-        const addVisitorUrl = 'https://grumpyfinance.api.stdlib.com/cat-day-visitors@dev?account=' + account
-        // const addVisitorUrl = 'https://thingproxy.freeboard.io/fetch/https://script.google.com/macros/s/AKfycbx7ChJSh5oyCwdlEVB5KTkzuA3tTdYDZb4gAA5CNlR6J9h6CQpON2vLY2hrWMfcuuLj9Q/exec'
-        await fetch (addVisitorUrl)
-        // , {
-        //   method: 'post',
-        //   headers: {
-        //     'Accept': 'application/json, text/plain, */*',
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify({ account: account })
-        // })
-      }
-      // once cat day is over delete the code above and change the state setter
-      // to only check if they are part of the cat day visitors constant
-      setIsCatDayVisitor(isCatDay || CAT_DAY_VISITORS.includes(account.toLowerCase()))
+      setIsCatDayVisitor(CAT_DAY_VISITORS.includes(account.toLowerCase()))
     }
   }
 
