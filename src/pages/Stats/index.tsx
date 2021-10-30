@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { HelpCircle } from 'react-feather'
 import { ORIGINAL_SWAPPERS, BUG_SQUISHERS, TESTERS, CAT_DAY_VISITORS } from './../../constants/index'
 import { AutoColumn } from '../../components/Column'
 import styled from 'styled-components'
@@ -65,6 +66,34 @@ const PaddedAutoColumn = styled(AutoColumn)`
   padding: 12px;
 `
 
+export const StyledHelpButton = styled.button`
+  position: relative;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+  height: 35px;
+  background-color: ${({ theme }) => theme.bg2};
+  margin-left: 8px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.5rem;
+
+  :hover,
+  :focus {
+    cursor: pointer;
+    outline: none;
+    background-color: ${({ theme }) => theme.bg4};
+  }
+
+  svg {
+    margin-top: 2px;
+  }
+  > * {
+    stroke: ${({ theme }) => theme.text1};
+  }
+`
+
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const ethplorerApiKey = process.env.REACT_APP_ETHPLORER_API_KEY || ''
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
@@ -116,6 +145,11 @@ export default function Stats() {
   const [isShibaLpProvider, setIsShibaLpProvider] = useState(false)
   const [isUniswapLpProvider, setIsUniswapLpProvider] = useState(false)
   const [isMarketingDonor, setIsMarketingDonor] = useState(false)
+
+  function openRankMenu () {
+    const rankMenuLink = 'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'
+    window.open(rankMenuLink);
+  }
 
   function formatPrice(price: number) {
     if (price > 0) {
@@ -579,7 +613,12 @@ export default function Stats() {
               <AutoColumn gap="lg">
                 <AutoRow justify="center">
                   <AutoColumn gap="sm">
-                    <TYPE.mediumHeader textAlign="center">Your PAWTHER Rank</TYPE.mediumHeader>
+                    <TYPE.mediumHeader textAlign="center">
+                      Your PAWTHER Rank 
+                      <StyledHelpButton onClick={() => openRankMenu()}>
+                        <HelpCircle size={14} />
+                      </StyledHelpButton>
+                    </TYPE.mediumHeader>
                     <TYPE.body textAlign="center">
                       <img src={pawthRank.img} alt="Logo" style={{ width: '100%', maxWidth: '200px', height: 'auto' }} />
                     </TYPE.body>
