@@ -14,6 +14,7 @@ import MetaMaskLogo from '../../assets/images/metamask.png'
 import { getEtherscanLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+import Confetti from '../Confetti'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -109,6 +110,7 @@ export function TransactionSubmittedContent({
           <ArrowUpCircle strokeWidth={0.5} size={inline ? '40px' : '90px'} color={theme.primary1} />
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
+          <Confetti start={Boolean(true)} />
           <Text fontWeight={500} fontSize={20} textAlign="center">
             Transaction Submitted
           </Text>
