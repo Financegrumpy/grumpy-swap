@@ -22,6 +22,7 @@ import Row, { AutoRow, RowFixed } from '../../components/Row'
 import BetterTradeLink from '../../components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
+import CompleteSwapModal from '../../components/swap/CompleteSwapModal'
 
 import { ArrowWrapper, BottomGrouping, Dots, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
 import SwapHeader from '../../components/swap/SwapHeader'
@@ -38,7 +39,7 @@ import { useSwapCallback } from '../../hooks/useSwapCallback'
 import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import { useUSDCValue } from '../../hooks/useUSDCPrice'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -55,6 +56,7 @@ import { isTradeBetter } from '../../utils/isTradeBetter'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
+import { ApplicationModal } from 'state/application/actions'
 
 const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -324,6 +326,12 @@ export default function Swap({ history }: RouteComponentProps) {
     }
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
+  const handleCompleteDismiss = useCallback(() => {
+    // if there was a tx hash, we want to clear the input
+    handleConfirmDismiss()
+    setUserClosedTransactionCompleteModal(true)
+  }, [])
+
   const handleAcceptChanges = useCallback(() => {
     setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
@@ -348,6 +356,10 @@ export default function Swap({ history }: RouteComponentProps) {
 
   const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
+  const [userClosedTransactionCompleteModal, setUserClosedTransactionCompleteModal] = useState<boolean>(false)
+  const openTransactionCompleteModal = useModalOpen(ApplicationModal.TRANSACTION_COMPLETE)
+  const showTransactionCompleteModal = openTransactionCompleteModal && !userClosedTransactionCompleteModal 
+
   return (
     <>
       <TokenWarningModal
@@ -360,7 +372,7 @@ export default function Swap({ history }: RouteComponentProps) {
         <SwapHeader />
         <Wrapper id="swap-page">
           <ConfirmSwapModal
-            isOpen={showConfirm}
+            isOpen={showConfirm && !openTransactionCompleteModal}
             trade={trade}
             originalTrade={tradeToConfirm}
             onAcceptChanges={handleAcceptChanges}
@@ -371,6 +383,19 @@ export default function Swap({ history }: RouteComponentProps) {
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
+          />
+          <CompleteSwapModal
+            isOpen={showTransactionCompleteModal}
+            trade={trade}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleSwap}
+            swapErrorMessage={swapErrorMessage}
+            onDismiss={handleCompleteDismiss}
           />
 
           <AutoColumn gap={'md'}>

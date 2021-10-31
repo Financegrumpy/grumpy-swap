@@ -14,6 +14,7 @@ import MetaMaskLogo from '../../assets/images/metamask.png'
 import { getEtherscanLink } from '../../utils'
 import { useActiveWeb3React } from '../../hooks'
 import useAddTokenToMetamask from 'hooks/useAddTokenToMetamask'
+import Confetti from '../Confetti'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -61,7 +62,7 @@ export function ConfirmationPendingContent({
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
           <Text fontWeight={500} fontSize={20} textAlign="center">
-            Waiting For Confirmation
+            Waiting For Confirmation - Hello there!
           </Text>
           <AutoColumn gap="12px" justify={'center'}>
             <Text fontWeight={600} fontSize={14} color="" textAlign="center">
@@ -109,13 +110,14 @@ export function TransactionSubmittedContent({
           <ArrowUpCircle strokeWidth={0.5} size={inline ? '40px' : '90px'} color={theme.primary1} />
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
+          <Confetti start={Boolean(true)} />
           <Text fontWeight={500} fontSize={20} textAlign="center">
-            Transaction Submitted
+            You just saved some animals! <br/>You are a Panther!
           </Text>
           {chainId && hash && (
             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-                View on Etherscan
+                Tweet about it and tell the world
               </Text>
             </ExternalLink>
           )}
