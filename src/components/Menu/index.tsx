@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { BookOpen, Code, Info, MessageCircle, PieChart } from 'react-feather'
+import { BookOpen, Code, Info, MessageCircle, PieChart, Edit3 } from 'react-feather'
 import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ReactComponent as MenuIcon } from '../../assets/images/menu.svg'
@@ -107,8 +107,12 @@ const MenuItem = styled(ExternalLink)`
 `
 
 const InternalMenuItem = styled(Link)`
+  display: flex;
   flex: 1;
+  flex-direction: row;
+  align-items: center;
   padding: 0.5rem 0.5rem;
+  text-decoration: none;
   color: ${({ theme }) => theme.text2};
   :hover {
     color: ${({ theme }) => theme.text1};
@@ -160,6 +164,12 @@ export default function Menu() {
             <PieChart size={14} />
             <div>Analytics</div>
           </MenuItem>
+          <InternalMenuItem to={{
+            pathname: '/feedback'
+          }}>
+            <Edit3 size={14} />
+              <div>Feedback</div>
+          </InternalMenuItem>
           {/* {account && (
             <UNIbutton onClick={openClaimModal} padding="8px 16px" width="100%" borderRadius="12px" mt="0.5rem">
               Claim UNI
