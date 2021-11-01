@@ -76,10 +76,10 @@ const pawthContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 
 async function getPawthRanks(balance: number) {
-  console.log('my balance is...', balance)
-  balance = (balance + 1000000000000001) / 1000000000
-  console.log('balance is ', balance)
-  // balance =/ 1000000000
+  //TODO: GET RID OF THIS FAKE BALANCE STUFF WHEN GOING LIVE
+  // balance = (balance + 1000000000000001) / 1000000000
+  balance /= 1000000000
+
   const ranks = [
     { name: 'You are the bottom rank', img: sadCat, threshold: 0 },
     { name: 'Stray Cat', img: strayCat, threshold: 1000 },
