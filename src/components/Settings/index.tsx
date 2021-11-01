@@ -29,10 +29,22 @@ const StyledMenuIcon = styled(Settings)`
   > * {
     stroke: ${({ theme }) => theme.text2};
   }
+`
 
+const StyledMenuTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.text2};
+  
   :hover {
     opacity: 0.7;
   }
+`
+
+const StyledMenuTitle = styled.span`
+  margin-left: 0.5rem;
+  color: ${({ theme }) => theme.text2};
+  font-size: 16px;
 `
 
 const StyledCloseIcon = styled(X)`
@@ -176,7 +188,9 @@ export default function SettingsTab() {
         </ModalContentWrapper>
       </Modal>
       <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
-        <StyledMenuIcon />
+        <StyledMenuTitleWrapper>
+          <StyledMenuIcon /><StyledMenuTitle>Settings</StyledMenuTitle>
+        </StyledMenuTitleWrapper>
         {expertMode ? (
           <EmojiWrapper>
             <span role="img" aria-label="wizard-icon">
