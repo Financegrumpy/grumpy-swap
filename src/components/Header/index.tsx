@@ -343,12 +343,12 @@ export default function Header() {
         >
           {t('MyPawth')}
         </StyledNavLink>
-        {/* <StyledNavLink 
+        <StyledNavLink 
           id={`swap-nav-link`} 
           to={'/swap?use=V2&inputCurrency=ETH&outputCurrency=0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'}
         >
           {t('PawSwap')}
-        </StyledNavLink> */}
+        </StyledNavLink>
         {/* <StyledNavLink
           id={`pool-nav-link`}
           to={'/pool/v2'}
@@ -368,7 +368,7 @@ export default function Header() {
         <StyledExternalLink id={`stake-nav-link`} href={'https://info.uniswap.org'}>
           Charts <span style={{ fontSize: '11px', textDecoration: 'none !important' }}>↗</span>
         </StyledExternalLink> */}
-        <StyledNavLink 
+        {/* <StyledNavLink 
           id={`feedback-nav-link`} 
           to={'/feedback'}
           isActive={(match, { pathname }) =>
@@ -377,7 +377,7 @@ export default function Header() {
           }
         >
           {t('Feedback')}
-        </StyledNavLink>
+        </StyledNavLink> */}
       </HeaderLinks>
       <HeaderControls>
         <HeaderElement>
