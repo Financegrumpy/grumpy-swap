@@ -347,7 +347,7 @@ export default function Header() {
           id={`swap-nav-link`} 
           to={'/swap?use=V2&inputCurrency=ETH&outputCurrency=0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'}
         >
-          {t('PawSwaP')}
+          {t('PawSwap')}
         </StyledNavLink> */}
         {/* <StyledNavLink
           id={`pool-nav-link`}
