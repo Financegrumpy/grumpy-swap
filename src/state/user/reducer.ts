@@ -1,4 +1,4 @@
-import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants'
+import { DEFAULT_DEADLINE_FROM_NOW, PAWTH_RECOMMENDED_SLIPPAGE } from '../../constants'
 import { createReducer } from '@reduxjs/toolkit'
 import { updateVersion } from '../global/actions'
 import {
@@ -62,7 +62,7 @@ export const initialState: UserState = {
   matchesDarkMode: false,
   userExpertMode: false,
   userSingleHopOnly: false,
-  userSlippageTolerance: 10,
+  userSlippageTolerance: PAWTH_RECOMMENDED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   tokens: {},
   pairs: {},
@@ -76,7 +76,7 @@ export default createReducer(initialState, (builder) =>
       // slippage isnt being tracked in local storage, reset to default
       // noinspection SuspiciousTypeOfGuard
       if (typeof state.userSlippageTolerance !== 'number') {
-        state.userSlippageTolerance = 10
+        state.userSlippageTolerance = PAWTH_RECOMMENDED_SLIPPAGE
       }
 
       // deadline isnt being tracked in local storage, reset to default

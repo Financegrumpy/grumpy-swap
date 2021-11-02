@@ -18,15 +18,18 @@ import { AutoColumn } from '../../components/Column'
 import CurrencyInputPanel from '../../components/CurrencyInputPanel'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import Loader from '../../components/Loader'
-import Row, { AutoRow, RowFixed } from '../../components/Row'
+import Row, { AutoRow, RowBetween, RowFixed } from '../../components/Row'
 import BetterTradeLink from '../../components/swap/BetterTradeLink'
 import confirmPriceImpactWithoutFee from '../../components/swap/confirmPriceImpactWithoutFee'
 import ConfirmSwapModal from '../../components/swap/ConfirmSwapModal'
+import CompleteSwapModal from '../../components/swap/CompleteSwapModal'
 
 import { ArrowWrapper, BottomGrouping, Dots, SwapCallbackError, Wrapper } from '../../components/swap/styleds'
 import SwapHeader from '../../components/swap/SwapHeader'
 import TradePrice from '../../components/swap/TradePrice'
 import TokenWarningModal from '../../components/TokenWarningModal'
+import Rank from '../../components/Rank'
+
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens, useCurrency } from '../../hooks/Tokens'
 import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useApproveCallback'
@@ -38,7 +41,7 @@ import { useSwapCallback } from '../../hooks/useSwapCallback'
 import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import { useUSDCValue } from '../../hooks/useUSDCPrice'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
-import { useWalletModalToggle } from '../../state/application/hooks'
+import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
 import {
   useDefaultsFromURLSearch,
@@ -47,7 +50,7 @@ import {
   useSwapState,
 } from '../../state/swap/hooks'
 import { useExpertModeManager, useUserSingleHopOnly, useUserSlippageTolerance } from '../../state/user/hooks'
-import { HideSmall, LinkStyledButton, TYPE } from '../../theme'
+import { ExternalLink, HideSmall, LinkStyledButton, TYPE } from '../../theme'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { computePriceImpactWithMaximumSlippage } from '../../utils/computePriceImpactWithMaximumSlippage'
 import { getTradeVersion } from '../../utils/getTradeVersion'
@@ -55,6 +58,9 @@ import { isTradeBetter } from '../../utils/isTradeBetter'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
+import { ApplicationModal } from 'state/application/actions'
+
+import pawswapLogo from '../../assets/images/pawswapLogo.png'
 
 const StyledInfo = styled(Info)`
   opacity: 0.4;
@@ -64,6 +70,29 @@ const StyledInfo = styled(Info)`
   :hover {
     opacity: 0.8;
   }
+`
+
+const StyledSwapHeader = styled.div`
+  padding: 1rem 1.25rem 0.5rem 1.25rem;
+  width: 100%;
+  color: ${({ theme }) => theme.text2};
+`
+const StyledSwapHeaderTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  color: ${({ theme }) => theme.text2};
+  
+  :hover {
+    opacity: 0.7;
+    cursor: pointer;
+  }
+`
+const StyledSwapHeaderTitle = styled.div`
+  margin-left: 0.5rem;
+  color: ${({ theme }) => theme.text2};
+`
+const PaddedAutoColumn = styled(AutoColumn)`
+  padding: 20px;
 `
 
 export default function Swap({ history }: RouteComponentProps) {
@@ -324,6 +353,12 @@ export default function Swap({ history }: RouteComponentProps) {
     }
   }, [attemptingTxn, onUserInput, swapErrorMessage, tradeToConfirm, txHash])
 
+  const handleCompleteDismiss = useCallback(() => {
+    // if there was a tx hash, we want to clear the input
+    handleConfirmDismiss()
+    setUserClosedTransactionCompleteModal(true)
+  }, [])
+
   const handleAcceptChanges = useCallback(() => {
     setSwapState({ tradeToConfirm: trade, swapErrorMessage, txHash, attemptingTxn, showConfirm })
   }, [attemptingTxn, showConfirm, swapErrorMessage, trade, txHash])
@@ -348,6 +383,10 @@ export default function Swap({ history }: RouteComponentProps) {
 
   const priceImpactTooHigh = priceImpactSeverity > 3 && !isExpertMode
 
+  const [userClosedTransactionCompleteModal, setUserClosedTransactionCompleteModal] = useState<boolean>(false)
+  const openTransactionCompleteModal = useModalOpen(ApplicationModal.TRANSACTION_COMPLETE)
+  const showTransactionCompleteModal = openTransactionCompleteModal && !userClosedTransactionCompleteModal 
+
   return (
     <>
       <TokenWarningModal
@@ -357,10 +396,15 @@ export default function Swap({ history }: RouteComponentProps) {
         onDismiss={handleDismissTokenWarning}
       />
       <AppBody>
+        <PaddedAutoColumn>
+          <img src={pawswapLogo} alt="PawSwap Logo" style={{ width: '100%' }} />
+        </PaddedAutoColumn>
+      </AppBody>
+      <AppBody>
         <SwapHeader />
         <Wrapper id="swap-page">
           <ConfirmSwapModal
-            isOpen={showConfirm}
+            isOpen={showConfirm && !openTransactionCompleteModal}
             trade={trade}
             originalTrade={tradeToConfirm}
             onAcceptChanges={handleAcceptChanges}
@@ -371,6 +415,19 @@ export default function Swap({ history }: RouteComponentProps) {
             onConfirm={handleSwap}
             swapErrorMessage={swapErrorMessage}
             onDismiss={handleConfirmDismiss}
+          />
+          <CompleteSwapModal
+            isOpen={showTransactionCompleteModal}
+            trade={trade}
+            originalTrade={tradeToConfirm}
+            onAcceptChanges={handleAcceptChanges}
+            attemptingTxn={attemptingTxn}
+            txHash={txHash}
+            recipient={recipient}
+            allowedSlippage={allowedSlippage}
+            onConfirm={handleSwap}
+            swapErrorMessage={swapErrorMessage}
+            onDismiss={handleCompleteDismiss}
           />
 
           <AutoColumn gap={'md'}>
@@ -621,6 +678,29 @@ export default function Swap({ history }: RouteComponentProps) {
           </AutoColumn>
         </Wrapper>
       </AppBody>
+      { account ? (
+        <AppBody>
+          <StyledSwapHeader>
+            <RowBetween>
+              <RowFixed>
+                <TYPE.black fontWeight={500} fontSize={16} style={{ marginRight: '8px' }}>
+                  Rank{' '}
+                </TYPE.black>
+              </RowFixed>
+              <RowFixed>
+                <ExternalLink href={'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'} style={{ textDecoration: 'none' }}>
+                  <StyledSwapHeaderTitleWrapper>
+                    <HelpCircle /> <StyledSwapHeaderTitle>Learn More</StyledSwapHeaderTitle>
+                  </StyledSwapHeaderTitleWrapper>
+                </ExternalLink>
+              </RowFixed>
+            </RowBetween>
+          </StyledSwapHeader>
+          <AutoColumn gap={'md'}>
+            <Rank refresh={showTransactionCompleteModal} />
+          </AutoColumn>
+        </AppBody>
+      ) : '' }
       {!swapIsUnsupported ? null : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { ApplicationModal, setOpenModal } from '../../state/application/actions'
 import { useActiveWeb3React } from '../../hooks'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppDispatch, AppState } from '../index'
@@ -68,6 +69,8 @@ export default function Updater(): null {
                   },
                 })
               )
+
+              dispatch(setOpenModal(ApplicationModal.TRANSACTION_COMPLETE))
 
               addPopup(
                 {
