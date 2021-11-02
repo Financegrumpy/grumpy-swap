@@ -60,6 +60,8 @@ import { warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import { ApplicationModal } from 'state/application/actions'
 
+import pawswapLogo from '../../assets/images/pawswapLogo.png'
+
 const StyledInfo = styled(Info)`
   opacity: 0.4;
   color: ${({ theme }) => theme.text1};
@@ -88,6 +90,9 @@ const StyledSwapHeaderTitleWrapper = styled.div`
 const StyledSwapHeaderTitle = styled.div`
   margin-left: 0.5rem;
   color: ${({ theme }) => theme.text2};
+`
+const PaddedAutoColumn = styled(AutoColumn)`
+  padding: 20px;
 `
 
 export default function Swap({ history }: RouteComponentProps) {
@@ -390,6 +395,11 @@ export default function Swap({ history }: RouteComponentProps) {
         onConfirm={handleConfirmTokenWarning}
         onDismiss={handleDismissTokenWarning}
       />
+      <AppBody>
+        <PaddedAutoColumn>
+          <img src={pawswapLogo} alt="PawSwap Logo" style={{ width: '100%' }} />
+        </PaddedAutoColumn>
+      </AppBody>
       <AppBody>
         <SwapHeader />
         <Wrapper id="swap-page">
