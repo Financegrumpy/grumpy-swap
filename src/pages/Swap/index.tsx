@@ -668,7 +668,7 @@ export default function Swap({ history }: RouteComponentProps) {
           </AutoColumn>
         </Wrapper>
       </AppBody>
-      {/* { account ? (
+      { account ? (
         <AppBody>
           <StyledSwapHeader>
             <RowBetween>
@@ -678,7 +678,7 @@ export default function Swap({ history }: RouteComponentProps) {
                 </TYPE.black>
               </RowFixed>
               <RowFixed>
-                <ExternalLink href={'https://pawthereum.com/#howtobuy'} style={{ textDecoration: 'none' }}>
+                <ExternalLink href={'https://cdn.discordapp.com/attachments/891351589162483732/895435039834251364/wcc2.png'} style={{ textDecoration: 'none' }}>
                   <StyledSwapHeaderTitleWrapper>
                     <HelpCircle /> <StyledSwapHeaderTitle>Learn More</StyledSwapHeaderTitle>
                   </StyledSwapHeaderTitleWrapper>
@@ -687,10 +687,10 @@ export default function Swap({ history }: RouteComponentProps) {
             </RowBetween>
           </StyledSwapHeader>
           <AutoColumn gap={'md'}>
-            <Rank />
+            <Rank refresh={showTransactionCompleteModal} />
           </AutoColumn>
         </AppBody>
-      ) : '' } */}
+      ) : '' }
       {!swapIsUnsupported ? null : (
         <UnsupportedCurrencyFooter show={swapIsUnsupported} currencies={[currencies.INPUT, currencies.OUTPUT]} />
       )}

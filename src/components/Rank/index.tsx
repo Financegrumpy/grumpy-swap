@@ -85,7 +85,11 @@ export const StyledHelpButton = styled.button`
 const ethescanApiKey = 'SZYGYXBA7K6ECH7DHB3QX2MR7GJZQK2M8P'
 const grumpyContractAddress = '0xaecc217a749c2405b5ebc9857a16d58bdc1c367f'
 
-export default function Rank() {
+interface Refresh {
+  refresh: boolean
+}
+
+export default function Rank(props:Refresh) {
   const { account } = useActiveWeb3React()
 
   // wallet state vars
@@ -202,7 +206,7 @@ export default function Rank() {
 
   useEffect(() => {
     getWallet()
-  }, [account])
+  }, [account, props.refresh])
 
   return (
     <PageWrapper gap="lg" justify="center">
